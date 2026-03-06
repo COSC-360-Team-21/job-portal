@@ -22,7 +22,7 @@ export default function App() {
       <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<><h1 style={{position:'absolute',width:'1px',height:'1px',padding:0,margin:'-1px',overflow:'hidden',clip:'rect(0,0,0,0)',whiteSpace:'nowrap',border:0}}>Job Portal</h1><Hero /></>} />
-          <Route path="/login" element={<LoginForm />} />
+          <Route path="/login" element={<><Link to="/" style={{display:'inline-block',padding:'1rem 1.5rem',fontWeight:600,color:'#2563eb',textDecoration:'none'}}>← Home</Link><LoginForm /></>} />
           <Route path="/register" element={<Placeholder title="Register" />} />
         </Routes>
       </main>
