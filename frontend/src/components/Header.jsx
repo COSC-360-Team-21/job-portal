@@ -7,13 +7,14 @@ const Header = () => {
   const navLinks = [
     { label: "Jobs", to: "/jobs" },
     { label: "Industries", to: "/industries" },
+    { label: "Register", to: "/register" },
   ];
 
   return (
     <header className="jb-header">
       <div className="jb-header-inner">
         {/* Logo */}
-        <Link to="/" className="jb-logo">
+        <Link to="/" className="jb-logo" aria-label="Home">
           <span className="jb-logo-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="7" width="20" height="14" rx="2" />
