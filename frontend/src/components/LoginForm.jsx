@@ -100,8 +100,7 @@ const LoginForm = () => {
         </form>
       </div>
 
-      <style jsx>{`
-        .jobboard-login-section {
+<style>{`        .jobboard-login-section {
           min-height: 100vh;
           display: flex;
           align-items: center;

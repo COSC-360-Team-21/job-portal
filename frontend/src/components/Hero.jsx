@@ -255,7 +255,7 @@ const Hero = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .jobboard-hero {
           position: relative;
           overflow: hidden;
