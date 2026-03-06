@@ -95,7 +95,7 @@ const LoginForm = () => {
 
           <p className="jobboard-signup-text">
             Don&apos;t have an account?{" "}
-            <a href="/signup">Sign up here</a>
+            <a href="/SignUp">Sign up here</a>
           </p>
         </form>
       </div>
