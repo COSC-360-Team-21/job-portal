@@ -1,18 +1,9 @@
 import PropTypes from 'prop-types';
 import { Routes, Route, Link } from 'react-router-dom';
-
-function Home() {
-  return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Job Portal</h1>
-      <p>Welcome! MERN stack is running.</p>
-      <nav>
-        <Link to="/login" style={{ marginRight: '1rem' }}>Login</Link>
-        <Link to="/register">Register</Link>
-      </nav>
-    </div>
-  );
-}
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Hero from './components/Hero';
+import LoginForm from './components/LoginForm';
 
 Placeholder.propTypes = { title: PropTypes.string.isRequired };
 function Placeholder({ title }) {
@@ -26,10 +17,16 @@ function Placeholder({ title }) {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Placeholder title="Login" />} />
-      <Route path="/register" element={<Placeholder title="Register" />} />
-    </Routes>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Header />
+      <main style={{ flex: 1 }}>
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<Placeholder title="Register" />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   );
 }
