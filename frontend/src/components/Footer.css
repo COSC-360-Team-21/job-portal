@@ -1,0 +1,133 @@
+.jb-footer {
+  background: #0f172a;
+  color: #94a3b8;
+  margin-top: auto;
+}
+
+.jb-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 24px 28px;
+}
+
+/* Top layout */
+.jb-footer-top {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 48px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Brand */
+.jb-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #f8fafc;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+
+.jb-footer-logo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-radius: 9px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.jb-footer-tagline {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: #64748b;
+  margin: 0 0 20px;
+  max-width: 240px;
+}
+
+/* Social */
+.jb-footer-social {
+  display: flex;
+  gap: 10px;
+}
+
+.jb-social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.jb-social-btn:hover {
+  background: #2563eb;
+  color: white;
+}
+
+/* Columns */
+.jb-footer-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.jb-footer-col-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #e2e8f0;
+  margin: 0 0 16px;
+}
+
+.jb-footer-col-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jb-footer-link {
+  font-size: 0.92rem;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.jb-footer-link:hover {
+  color: #93c5fd;
+}
+
+/* Bottom bar */
+.jb-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  gap: 16px;
+}
+
+.jb-footer-copy {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #475569;
+}
+
+.jb-footer-bottom-links {
+  display: flex;
+  gap: 20px;
+}
