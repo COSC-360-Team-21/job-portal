@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { Routes, Route, Link } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
@@ -20,6 +21,7 @@ function Placeholder({ title }) {
 
 export default function App() {
   return (
+    <AuthProvider>
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
       <main style={{ flex: 1 }}>
@@ -32,5 +34,6 @@ export default function App() {
       </main>
       <Footer />
     </div>
+    </AuthProvider>
   );
 }

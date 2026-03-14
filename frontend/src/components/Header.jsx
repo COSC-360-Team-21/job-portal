@@ -1,9 +1,17 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./Header.css";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const navLinks = [
     { label: "Jobs", to: "/jobs" },
@@ -38,11 +46,17 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* Login button */}
+        {/* Login / Logout button */}
         <div className="jb-header-actions">
-          <Link to="/login" className="jb-login-btn">
-            Login
-          </Link>
+          {user ? (
+            <button onClick={handleLogout} className="jb-login-btn">
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="jb-login-btn">
+              Login
+            </Link>
+          )}
         </div>
       </div>
 

@@ -1,9 +1,32 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./LoginForm.css";
 
 const LoginForm = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      await login(email, password);
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section className="jobboard-login-section">
@@ -17,7 +40,9 @@ const LoginForm = () => {
           </p>
         </div>
 
-        <form className="jobboard-login-form">
+        <form className="jobboard-login-form" onSubmit={handleSubmit}>
+          {error && <p className="jobboard-error">{error}</p>}
+
           <div className="jobboard-form-group">
             <label htmlFor="email">Email</label>
             <div className="jobboard-input-wrapper">
@@ -27,6 +52,9 @@ const LoginForm = () => {
                 type="email"
                 placeholder="Enter your email"
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -46,6 +74,9 @@ const LoginForm = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
               <button
                 type="button"
@@ -71,12 +102,8 @@ const LoginForm = () => {
             <span className="jobboard-secure-note">Secure login</span>
           </div>
 
-          <button type="submit" className="jobboard-primary-btn">
-            Continue
-          </button>
-
-          <button type="button" className="jobboard-secondary-btn">
-            Continue as Guest
+          <button type="submit" className="jobboard-primary-btn" disabled={loading}>
+            {loading ? "Signing in…" : "Continue"}
           </button>
 
           <div className="jobboard-divider">
@@ -96,7 +123,7 @@ const LoginForm = () => {
 
           <p className="jobboard-signup-text">
             Don&apos;t have an account?{" "}
-            <a href="/signup">Sign up here</a>
+            <Link to="/register">Sign up here</Link>
           </p>
         </form>
       </div>

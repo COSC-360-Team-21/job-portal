@@ -87,6 +87,9 @@
   text-decoration: none;
   transition: opacity 0.15s, transform 0.15s;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .jb-login-btn:hover {

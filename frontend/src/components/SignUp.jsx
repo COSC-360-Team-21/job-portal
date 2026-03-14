@@ -1,8 +1,34 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
-  const [role, setRole] = useState("seeker");
+  const [role, setRole] = useState("jobseeker");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!agreed) { setError("You must agree to the Terms & Conditions."); return; }
+    setError("");
+    setLoading(true);
+    try {
+      await register(name, email, password, role);
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section className="jobboard-login-section">
@@ -16,15 +42,17 @@ const SignUp = () => {
           </p>
         </div>
 
-        <form className="jobboard-login-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="jobboard-login-form" onSubmit={handleSubmit}>
+          {error && <p className="jobboard-error">{error}</p>}
+
           {/* Role Selection */}
           <div className="jobboard-form-group">
             <label>I want to sign up as</label>
             <div className="jobboard-role-toggle">
               <button
                 type="button"
-                className={`jobboard-role-btn ${role === "seeker" ? "active" : ""}`}
-                onClick={() => setRole("seeker")}
+                className={`jobboard-role-btn ${role === "jobseeker" ? "active" : ""}`}
+                onClick={() => setRole("jobseeker")}
               >
                 Job Seeker
               </button>
@@ -42,7 +70,14 @@ const SignUp = () => {
             <label htmlFor="name">Full Name</label>
             <div className="jobboard-input-wrapper">
               <span className="jobboard-input-icon">👤</span>
-              <input id="name" type="text" placeholder="Enter your full name" />
+              <input
+                id="name"
+                type="text"
+                placeholder="Enter your full name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
             </div>
           </div>
 
@@ -50,7 +85,14 @@ const SignUp = () => {
             <label htmlFor="email">Email</label>
             <div className="jobboard-input-wrapper">
               <span className="jobboard-input-icon">✉</span>
-              <input id="email" type="email" placeholder="name@company.com" />
+              <input
+                id="email"
+                type="email"
+                placeholder="name@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
           </div>
 
@@ -62,6 +104,9 @@ const SignUp = () => {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Create a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
               <button
                 type="button"
@@ -75,14 +120,18 @@ const SignUp = () => {
 
           <div className="jobboard-login-options">
             <label className="jobboard-checkbox">
-              <input type="checkbox" />
-              <span>I agree to the Terms & Conditions</span>
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={() => setAgreed((prev) => !prev)}
+              />
+              <span>I agree to the Terms &amp; Conditions</span>
             </label>
             <span className="jobboard-secure-note">Secure Sign Up</span>
           </div>
 
-          <button type="submit" className="jobboard-primary-btn">
-            Create Account
+          <button type="submit" className="jobboard-primary-btn" disabled={loading}>
+            {loading ? "Creating account…" : "Create Account"}
           </button>
 
           <div className="jobboard-divider">
@@ -99,7 +148,7 @@ const SignUp = () => {
           </div>
 
           <p className="jobboard-signup-text">
-            Already have an account? <a href="/login">Login here</a>
+            Already have an account? <Link to="/login">Login here</Link>
           </p>
         </form>
       </div>
