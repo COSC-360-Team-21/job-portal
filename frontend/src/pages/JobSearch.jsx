@@ -199,7 +199,7 @@ const JobSearch = () => {
                     <span className="jsearch-results-for">
                       for{" "}
                       {[
-                        searchTerm && <strong key="term">"{searchTerm}"</strong>,
+                        searchTerm && <strong key="term">&quot;{searchTerm}&quot;</strong>,
                         activeWorkType && (
                           <span key="wt" className="jsearch-results-badge">
                             {activeWorkType}
@@ -252,7 +252,7 @@ const JobSearch = () => {
                 <h2 className="jsearch-empty-title">No results found</h2>
                 <p className="jsearch-empty-text">
                   No jobs matched{" "}
-                  {searchTerm ? <strong>"{searchTerm}"</strong> : "your search"}.
+                  {searchTerm ? <strong>&quot;{searchTerm}&quot;</strong> : "your search"}.
                   <br />
                   Try different keywords or remove the work type filter.
                 </p>
