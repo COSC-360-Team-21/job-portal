@@ -1,0 +1,65 @@
+.js-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.js-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.js-input {
+  flex: 1;
+  padding: 14px 16px;
+  font-size: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  outline: none;
+}
+
+.js-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.js-button {
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.js-button:hover {
+  background: #1d4ed8;
+}
+
+.js-results-info p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.js-no-results {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+@media (max-width: 640px) {
+  .js-form {
+    flex-direction: column;
+  }
+
+  .js-button {
+    width: 100%;
+  }
+}
