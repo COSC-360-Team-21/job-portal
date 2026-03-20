@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { createJob, getJobs, updateJob, deleteJob } from '../controllers/jobsController.js';
 import protect, { authorizeRoles } from '../middleware/authMiddleware.js';
 import { param } from 'express-validator';
@@ -28,7 +28,20 @@ router.post(
   createJob
 );
 
-router.get('/', getJobs);
+router.get(
+  '/',
+  [
+    query('page')
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage('page must be an integer greater than or equal to 1'),
+    query('limit')
+      .optional()
+      .isInt({ min: 1, max: 100 })
+      .withMessage('limit must be an integer between 1 and 100'),
+  ],
+  getJobs
+);
 
 router.put(
   '/:id',
@@ -48,7 +61,7 @@ router.delete(
   '/:id',
   protect,
   authorizeRoles('employer'),
-  param('id').isMongoId().withMessage('Invalid job id'),
+  [param('id').isMongoId().withMessage('Invalid job id')],
   deleteJob
 );
 
