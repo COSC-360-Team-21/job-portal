@@ -1,0 +1,26 @@
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid credentials
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Valid email is required
+              path:
+                type: string
+                example: email
+              location:
+                type: string
+                example: body
