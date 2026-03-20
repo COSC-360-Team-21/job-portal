@@ -35,6 +35,12 @@ tags:
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not employer or not owner of job)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'      
       500:
         description: Server error
         content:
