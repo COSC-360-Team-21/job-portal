@@ -15,7 +15,7 @@ const Header = () => {
 
   const navLinks = [
     { label: "Jobs", to: "/jobs" },
-    { label: "Industries", to: "/industries" },
+    { label: "Search", to: "/search" },
     { label: "Register", to: "/register" },
   ];
 
