@@ -10,6 +10,7 @@ Welcome to Team 21's job portal project. This guide covers everything you need t
 - [Development Workflow](#development-workflow)
 - [Project Services](#project-services)
 - [Running Tests](#running-tests)
+- [API Testing Guide](#api-testing-guide)
 - [Code Quality](#code-quality)
 - [Git Workflow](#git-workflow)
 - [Environment Variables](#environment-variables)
@@ -202,6 +203,11 @@ e2e/tests/
 
 When adding new backend routes, add corresponding tests in `backend/src/__tests__/`.
 When adding new React components, add tests in `frontend/src/__tests__/`.
+
+
+## API Testing Guide
+
+See the dedicated backend API testing guide at [docs/api-testing-guide.md](docs/api-testing-guide.md).
 
 
 ## Code Quality
