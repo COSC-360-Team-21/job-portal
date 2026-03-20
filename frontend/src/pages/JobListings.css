@@ -53,6 +53,39 @@
   font-size: 1rem;
 }
 
+.jl-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #64748b;
+  font-size: 0.95rem;
+  padding: 20px 0;
+}
+
+.jl-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid #e2e8f0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: jl-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes jl-spin {
+  to { transform: rotate(360deg); }
+}
+
+.jl-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 0.95rem;
+}
+
 .jl-grid {
   display: flex;
   flex-direction: column;

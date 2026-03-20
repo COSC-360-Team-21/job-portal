@@ -1,22 +1,46 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import JobCard from "../components/JobCard";
-import allJobs from "../data/jobs.json";
 import "./JobListings.css";
 
-const formatSalary = ({ min, max, currency, period }) => {
-  const fmt = (n) =>
-    period === "hourly" ? `$${n}` : `$${n.toLocaleString()}`;
-  const suffix = period === "hourly" ? " / hr" : "";
-  return `${fmt(min)} – ${fmt(max)} ${currency}${suffix}`;
-};
+const WORK_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
 const matches = (value, term) =>
-  String(value).toLowerCase().includes(term.toLowerCase());
+  String(value ?? "").toLowerCase().includes(term.toLowerCase());
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return null;
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
 const JobListings = () => {
+  const [allJobs, setAllJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [workType, setWorkType] = useState("");
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/jobs?limit=100");
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+        const json = await res.json();
+        setAllJobs(json.data ?? []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobs();
+  }, []);
 
   const results = useMemo(() => {
     return allJobs.filter((job) => {
@@ -25,22 +49,22 @@ const JobListings = () => {
         const inTitle = matches(job.title, term);
         const inCompany = matches(job.company, term);
         const inDescription = matches(job.description, term);
-        const inSkills = job.skills.some((s) => matches(s, term));
-        if (!inTitle && !inCompany && !inDescription && !inSkills) return false;
+        const inReqs = (job.requirements ?? []).some((r) => matches(r, term));
+        if (!inTitle && !inCompany && !inDescription && !inReqs) return false;
       }
       if (location.trim() && !matches(job.location, location.trim())) return false;
       if (workType && job.workType !== workType) return false;
       return true;
     });
-  }, [query, location, workType]);
-
-  const workTypes = [...new Set(allJobs.map((j) => j.workType))];
+  }, [allJobs, query, location, workType]);
 
   return (
     <section className="jl-page">
       <div className="jl-header">
         <h1 className="jl-title">Browse Jobs</h1>
-        <p className="jl-subtitle">{results.length} opportunities available</p>
+        <p className="jl-subtitle">
+          {loading ? "Loading…" : `${results.length} opportunit${results.length !== 1 ? "ies" : "y"} available`}
+        </p>
       </div>
 
       <div className="jl-filters">
@@ -64,31 +88,50 @@ const JobListings = () => {
           onChange={(e) => setWorkType(e.target.value)}
         >
           <option value="">All work types</option>
-          {workTypes.map((wt) => (
-            <option key={wt} value={wt}>{wt}</option>
+          {WORK_TYPES.map((wt) => (
+            <option key={wt} value={wt}>
+              {wt}
+            </option>
           ))}
         </select>
       </div>
 
-      <div className="jl-grid">
-        {results.length > 0 ? (
-          results.map((job) => (
-            <JobCard
-              key={job.id}
-              title={job.title}
-              company={job.company}
-              location={job.location}
-              workType={job.workType}
-              salary={formatSalary(job.salary)}
-              postedDate={job.postedDate}
-              skills={job.skills}
-              onApply={() => alert(`Applying for ${job.title} at ${job.company}`)}
-            />
-          ))
-        ) : (
-          <p className="jl-empty">No jobs match your search.</p>
-        )}
-      </div>
+      {loading && (
+        <div className="jl-loading">
+          <span className="jl-spinner" aria-hidden="true" />
+          <span>Loading jobs…</span>
+        </div>
+      )}
+
+      {error && !loading && (
+        <div className="jl-error" role="alert">
+          Could not load jobs — {error}
+        </div>
+      )}
+
+      {!loading && !error && (
+        <div className="jl-grid">
+          {results.length > 0 ? (
+            results.map((job) => (
+              <JobCard
+                key={job._id}
+                title={job.title}
+                company={job.company}
+                location={job.location}
+                workType={job.workType}
+                salary={job.salaryRange ?? null}
+                postedDate={formatDate(job.postedAt ?? job.createdAt)}
+                skills={job.requirements ?? []}
+                onApply={() =>
+                  alert(`Applying for ${job.title} at ${job.company}`)
+                }
+              />
+            ))
+          ) : (
+            <p className="jl-empty">No jobs match your search.</p>
+          )}
+        </div>
+      )}
     </section>
   );
 };
