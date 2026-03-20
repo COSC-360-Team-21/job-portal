@@ -1,0 +1,372 @@
+[
+  {
+    "id": 1,
+    "title": "Frontend Developer",
+    "company": "NovaTech",
+    "location": "Toronto, ON",
+    "workType": "Full-Time",
+
+    "salary": {
+      "min": 78000,
+      "max": 96000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-17",
+    "applicationDeadline": "2026-04-17",
+
+    "skills": ["React", "TypeScript", "UI Systems"],
+    "description": "We are looking for a skilled Frontend Developer to join our product team. You will build and maintain user-facing features using React and TypeScript, collaborating closely with designers and backend engineers.",
+    "responsibilities": [
+      "Build reusable UI components in React and TypeScript",
+      "Collaborate with UX designers to implement pixel-perfect interfaces",
+      "Optimize application performance and accessibility",
+      "Participate in code reviews and technical discussions"
+    ],
+    "requirements": [
+      "3+ years of experience with React",
+      "Strong TypeScript skills",
+      "Familiarity with design systems",
+      "Experience with REST APIs"
+    ],
+
+    "status": "active",
+    "applicationsCount": 34
+  },
+
+
+
+  {
+    "id": 2,
+    "title": "UX Designer",
+    "company": "BrightLabs",
+    "location": "Remote",
+    "workType": "Full-Time",
+
+    "salary": {
+      "min": 70000,
+      "max": 88000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-18",
+    "applicationDeadline": "2026-04-18",
+
+    "skills": ["Figma", "User Research", "Prototyping"],
+    "description": "BrightLabs is hiring a UX Designer to shape the user experience across our SaaS platform. You will conduct user research, create wireframes and prototypes, and work hand-in-hand with developers to ship polished experiences.",
+    "responsibilities": [
+      "Conduct user interviews and usability testing",
+      "Create wireframes, prototypes, and high-fidelity mockups in Figma",
+      "Define and maintain design system guidelines",
+      "Collaborate with product and engineering teams"
+    ],
+    "requirements": [
+      "2+ years of UX/product design experience",
+      "Proficiency in Figma",
+      "Experience with user research methodologies",
+      "Strong portfolio demonstrating end-to-end design process"
+    ],
+
+    "status": "active",
+    "applicationsCount": 21
+  },
+
+
+
+  {
+    "id": 3,
+    "title": "Data Analyst",
+    "company": "CloudPeak",
+    "location": "Vancouver, BC",
+    "workType": "Contract",
+
+    "salary": {
+      "min": 55,
+      "max": 70,
+      "currency": "CAD",
+      "period": "hourly"
+    },
+
+    "postedDate": "2026-03-16",
+    "applicationDeadline": "2026-04-05",
+
+    "skills": ["Python", "SQL", "Tableau"],
+    "description": "CloudPeak is seeking a contract Data Analyst to help turn complex datasets into actionable insights. You will build dashboards, write SQL queries, and produce reports for business stakeholders.",
+    "responsibilities": [
+      "Write and optimize complex SQL queries",
+      "Build and maintain Tableau dashboards",
+      "Analyze large datasets using Python (Pandas, NumPy)",
+      "Present findings to non-technical stakeholders"
+    ],
+    "requirements": [
+      "2+ years of data analysis experience",
+      "Advanced SQL skills",
+      "Experience with Tableau or similar BI tools",
+      "Python scripting for data manipulation"
+    ],
+
+    "status": "active",
+    "applicationsCount": 18
+  },
+
+
+
+  {
+    "id": 4,
+    "title": "Marketing Coordinator",
+    "company": "Vertex",
+    "location": "Calgary, AB",
+    "workType": "Part-Time",
+
+    "salary": {
+      "min": 42000,
+      "max": 52000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-14",
+    "applicationDeadline": "2026-04-14",
+
+    "skills": ["Content Strategy", "SEO", "Analytics"],
+    "description": "Vertex is looking for a part-time Marketing Coordinator to support our content and digital marketing efforts. You will manage social media channels, assist with SEO strategy, and track campaign performance.",
+    "responsibilities": [
+      "Plan and schedule social media content",
+      "Assist in executing SEO strategies",
+      "Monitor and report on campaign analytics",
+      "Coordinate with external agencies and vendors"
+    ],
+    "requirements": [
+      "1+ year of marketing or communications experience",
+      "Familiarity with Google Analytics and SEO tools",
+      "Strong written communication skills",
+      "Ability to work 20–25 hours per week"
+    ],
+
+    "status": "active",
+    "applicationsCount": 12
+  },
+
+
+
+  {
+    "id": 5,
+    "title": "Project Manager",
+    "company": "NorthGrid",
+    "companyLogoUrl": "",
+    "location": "Remote",
+    "workType": "Full-Time",
+
+    "salary": {
+      "min": 90000,
+      "max": 110000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-19",
+    "applicationDeadline": "2026-04-30",
+
+    "skills": ["Agile", "Jira", "Stakeholder Management"],
+    "description": "NorthGrid is hiring an experienced Project Manager to oversee cross-functional software delivery teams. You will drive Agile ceremonies, manage timelines and budgets, and ensure successful project outcomes.",
+    "responsibilities": [
+      "Lead sprint planning, retrospectives, and standups",
+      "Manage project scope, risks, and dependencies",
+      "Communicate progress and blockers to senior leadership",
+      "Coordinate across engineering, design, and QA teams"
+    ],
+    "requirements": [
+      "4+ years of project management experience in tech",
+      "PMP or Scrum Master certification preferred",
+      "Strong experience with Jira and Confluence",
+      "Excellent stakeholder communication skills"
+    ],
+
+    "status": "active",
+    "applicationsCount": 47
+  },
+  {
+    "id": 6,
+    "title": "Backend Engineer",
+    "company": "CloudPeak",
+    "location": "Ottawa, ON",
+    "workType": "Full-Time",
+
+    "salary": {
+      "min": 85000,
+      "max": 105000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-15",
+    "applicationDeadline": "2026-04-15",
+
+    "skills": ["Node.js", "MongoDB", "REST APIs"],
+    "description": "CloudPeak is growing its backend team and needs an experienced Backend Engineer to design and maintain scalable APIs. You will work on high-throughput services and contribute to database architecture decisions.",
+    "responsibilities": [
+      "Design and build RESTful APIs with Node.js",
+      "Manage and optimize MongoDB schemas and queries",
+      "Write unit and integration tests",
+      "Participate in architecture reviews and planning"
+    ],
+    "requirements": [
+      "3+ years of backend engineering experience",
+      "Proficiency in Node.js and Express",
+      "Strong MongoDB or NoSQL database knowledge",
+      "Experience with CI/CD pipelines"
+    ],
+
+    "status": "active",
+    "applicationsCount": 29
+  },
+
+
+
+  {
+    "id": 7,
+    "title": "DevOps Engineer",
+    "company": "Arcline Systems",
+    "location": "Remote",
+    "workType": "Full-Time",
+
+    "salary": {
+      "min": 95000,
+      "max": 120000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-12",
+    "applicationDeadline": "2026-04-12",
+
+    "skills": ["AWS", "Docker", "Kubernetes", "Terraform"],
+    "description": "Arcline Systems is seeking a DevOps Engineer to manage cloud infrastructure and improve deployment pipelines. You will drive automation initiatives and ensure high availability of production systems.",
+    "responsibilities": [
+      "Manage and provision AWS infrastructure using Terraform",
+      "Maintain and improve CI/CD pipelines",
+      "Monitor system health and respond to incidents",
+      "Containerize services using Docker and Kubernetes"
+    ],
+    "requirements": [
+      "3+ years of DevOps or infrastructure engineering experience",
+      "Hands-on AWS experience (EC2, S3, RDS, EKS)",
+      "Proficiency with Docker and Kubernetes",
+      "Experience with infrastructure-as-code tools"
+    ],
+
+    "status": "active",
+    "applicationsCount": 15
+  },
+  {
+    "id": 8,
+    "title": "Product Manager",
+    "company": "Meridian Digital",
+    "location": "Toronto, ON",
+    "workType": "Full-Time",
+
+    "salary": {
+      "min": 100000,
+      "max": 125000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-10",
+    "applicationDeadline": "2026-04-10",
+    "skills": ["Product Strategy", "Roadmapping", "User Stories", "A/B Testing"],
+    "description": "Meridian Digital is looking for a Product Manager to own the roadmap for our core consumer product. You will define product vision, gather customer insights, and partner with engineering and design to ship features that drive growth.",
+    "responsibilities": [
+      "Define and prioritize the product roadmap",
+      "Write detailed user stories and acceptance criteria",
+      "Conduct competitive and market analysis",
+      "Analyze metrics and run A/B experiments to guide decisions"
+    ],
+    "requirements": [
+      "4+ years of product management experience",
+      "Experience working in an Agile environment",
+      "Strong analytical and data-driven decision-making skills",
+      "Excellent written and verbal communication"
+    ],
+
+    "status": "active",
+    "applicationsCount": 52
+  },
+
+
+
+  {
+    "id": 9,
+    "title": "QA Engineer",
+    "company": "Quantum Leap Tech",
+    "location": "Waterloo, ON",
+    "workType": "Full-Time",
+
+    "salary": {
+      "min": 68000,
+      "max": 85000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-13",
+    "applicationDeadline": "2026-04-13",
+    "skills": ["Selenium", "Cypress", "Test Planning", "API Testing"],
+    "description": "Quantum Leap Tech needs a detail-oriented QA Engineer to ensure the quality of our web and mobile applications. You will design test plans, automate test cases, and work closely with developers to resolve defects.",
+    "responsibilities": [
+      "Write and execute manual and automated test cases",
+      "Build and maintain Cypress and Selenium test suites",
+      "Perform API testing using Postman",
+      "Raise and track defects through resolution"
+    ],
+    "requirements": [
+      "2+ years of QA or software testing experience",
+      "Experience with Cypress or Selenium",
+      "Familiarity with REST API testing",
+      "Strong attention to detail and analytical thinking"
+    ],
+
+    "status": "active",
+    "applicationsCount": 9
+  },
+
+
+
+  {
+    "id": 10,
+    "title": "Machine Learning Engineer",
+    "company": "Synapse AI",
+    "location": "Montreal, QC",
+    "workType": "Full-Time",
+
+    "salary": {
+      "min": 110000,
+      "max": 140000,
+      "currency": "CAD",
+      "period": "yearly"
+    },
+
+    "postedDate": "2026-03-11",
+    "applicationDeadline": "2026-04-25",
+
+    "skills": ["Python", "PyTorch", "MLOps", "AWS SageMaker"],
+    "description": "Synapse AI is seeking a Machine Learning Engineer to develop and deploy ML models powering our recommendation and personalization systems. You will own the full ML lifecycle from experimentation to production.",
+    "responsibilities": [
+      "Design, train, and evaluate ML models using PyTorch",
+      "Build MLOps pipelines for model training and deployment",
+      "Collaborate with data scientists to productionize research models",
+      "Monitor model performance and implement improvements"
+    ],
+    "requirements": [
+      "3+ years of machine learning engineering experience",
+      "Strong Python and PyTorch skills",
+      "Experience with MLOps tools (SageMaker, MLflow, or similar)",
+      "Solid understanding of model evaluation and A/B testing"
+    ],
+
+    "status": "active",
+    "applicationsCount": 38
+  }
+]
