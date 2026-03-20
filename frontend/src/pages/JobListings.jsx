@@ -1,95 +1,94 @@
+import { useState, useMemo } from "react";
 import JobCard from "../components/JobCard";
+import allJobs from "../data/jobs.json";
 import "./JobListings.css";
 
-const SAMPLE_JOBS = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    company: "NovaTech",
-    location: "Toronto, ON",
-    workType: "Full-Time",
-    salary: "$78,000 – $96,000",
-    postedDate: "2 days ago",
-    skills: ["React", "TypeScript", "UI Systems"],
-  },
-  {
-    id: 2,
-    title: "UX Designer",
-    company: "BrightLabs",
-    location: "Remote",
-    workType: "Full-Time",
-    salary: "$70,000 – $88,000",
-    postedDate: "1 day ago",
-    skills: ["Figma", "User Research", "Prototyping"],
-  },
-  {
-    id: 3,
-    title: "Data Analyst",
-    company: "CloudPeak",
-    location: "Vancouver, BC",
-    workType: "Contract",
-    salary: "$55 – $70 / hr",
-    postedDate: "3 days ago",
-    skills: ["Python", "SQL", "Tableau"],
-  },
-  {
-    id: 4,
-    title: "Marketing Coordinator",
-    company: "Vertex",
-    location: "Calgary, AB",
-    workType: "Part-Time",
-    salary: "$42,000 – $52,000",
-    postedDate: "5 days ago",
-    skills: ["Content Strategy", "SEO", "Analytics"],
-  },
-  {
-    id: 5,
-    title: "Project Manager",
-    company: "NorthGrid",
-    location: "Remote",
-    workType: "Full-Time",
-    salary: "$90,000 – $110,000",
-    postedDate: "Today",
-    skills: ["Agile", "Jira", "Stakeholder Management"],
-  },
-  {
-    id: 6,
-    title: "Backend Engineer",
-    company: "CloudPeak",
-    location: "Ottawa, ON",
-    workType: "Full-Time",
-    salary: "$85,000 – $105,000",
-    postedDate: "4 days ago",
-    skills: ["Node.js", "MongoDB", "REST APIs"],
-  },
-];
+const formatSalary = ({ min, max, currency, period }) => {
+  const fmt = (n) =>
+    period === "hourly" ? `$${n}` : `$${n.toLocaleString()}`;
+  const suffix = period === "hourly" ? " / hr" : "";
+  return `${fmt(min)} – ${fmt(max)} ${currency}${suffix}`;
+};
+
+const matches = (value, term) =>
+  String(value).toLowerCase().includes(term.toLowerCase());
 
 const JobListings = () => {
+  const [query, setQuery] = useState("");
+  const [location, setLocation] = useState("");
+  const [workType, setWorkType] = useState("");
+
+  const results = useMemo(() => {
+    return allJobs.filter((job) => {
+      if (query.trim()) {
+        const term = query.trim();
+        const inTitle = matches(job.title, term);
+        const inCompany = matches(job.company, term);
+        const inDescription = matches(job.description, term);
+        const inSkills = job.skills.some((s) => matches(s, term));
+        if (!inTitle && !inCompany && !inDescription && !inSkills) return false;
+      }
+      if (location.trim() && !matches(job.location, location.trim())) return false;
+      if (workType && job.workType !== workType) return false;
+      return true;
+    });
+  }, [query, location, workType]);
+
+  const workTypes = [...new Set(allJobs.map((j) => j.workType))];
+
   return (
     <section className="jl-page">
       <div className="jl-header">
         <h1 className="jl-title">Browse Jobs</h1>
-        <p className="jl-subtitle">
-          {SAMPLE_JOBS.length} opportunities available right now
-        </p>
+        <p className="jl-subtitle">{results.length} opportunities available</p>
+      </div>
+
+      <div className="jl-filters">
+        <input
+          className="jl-input"
+          type="text"
+          placeholder="Search by title, company, skill…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <input
+          className="jl-input"
+          type="text"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <select
+          className="jl-select"
+          value={workType}
+          onChange={(e) => setWorkType(e.target.value)}
+        >
+          <option value="">All work types</option>
+          {workTypes.map((wt) => (
+            <option key={wt} value={wt}>{wt}</option>
+          ))}
+        </select>
       </div>
 
       <div className="jl-grid">
-        {SAMPLE_JOBS.map((job) => (
-          <JobCard
-            key={job.id}
-            title={job.title}
-            company={job.company}
-            location={job.location}
-            workType={job.workType}
-            salary={job.salary}
-            postedDate={job.postedDate}
-            skills={job.skills}
-            onApply={() => alert(`Applying for ${job.title} at ${job.company}`)}
-          />
-        ))}
+        {results.length > 0 ? (
+          results.map((job) => (
+            <JobCard
+              key={job.id}
+              title={job.title}
+              company={job.company}
+              location={job.location}
+              workType={job.workType}
+              salary={formatSalary(job.salary)}
+              postedDate={job.postedDate}
+              skills={job.skills}
+              onApply={() => alert(`Applying for ${job.title} at ${job.company}`)}
+            />
+          ))
+        ) : (
+          <p className="jl-empty">No jobs match your search.</p>
+        )}
       </div>
-
     </section>
   );
 };
