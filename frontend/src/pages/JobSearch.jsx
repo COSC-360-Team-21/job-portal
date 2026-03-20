@@ -68,7 +68,7 @@ const JobSearch = () => {
 
   return (
     <div className="jsearch-page">
-      {/* ── Hero / Search Bar ── */}
+      {/* Hero / Search Bar  */}
       <div className="jsearch-hero">
         <div className="jsearch-hero-glow jsearch-hero-glow--left" aria-hidden="true" />
         <div className="jsearch-hero-glow jsearch-hero-glow--right" aria-hidden="true" />
@@ -135,7 +135,7 @@ const JobSearch = () => {
         </div>
       </div>
 
-      {/* ── Body ── */}
+      {/*  Body  */}
       <div className="jsearch-body">
         {/* Loading */}
         {loading && (
