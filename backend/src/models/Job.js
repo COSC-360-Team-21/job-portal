@@ -25,6 +25,14 @@ const jobSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    responsibilities: {
+      type: [String],
+      default: [],
+    },
     salaryRange: {
       type: String,
       trim: true,
@@ -37,11 +45,18 @@ const jobSchema = new mongoose.Schema(
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     postedAt: {
       type: Date,
       default: Date.now,
+    },
+    applicationDeadline: {
+      type: Date,
+    },
+    status: {
+      type: String,
+      enum: ['active', 'closed'],
+      default: 'active',
     },
   },
   { timestamps: true }
