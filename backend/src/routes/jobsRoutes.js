@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { body, query } from 'express-validator';
 import { createJob, getJobs, searchJobs, updateJob, deleteJob } from '../controllers/jobsController.js';
+import { getApplicationsForJob } from '../controllers/applicationsController.js';
 import protect, { authorizeRoles } from '../middleware/authMiddleware.js';
 import { param } from 'express-validator';
 
@@ -76,6 +77,14 @@ router.delete(
   authorizeRoles('employer'),
   [param('id').isMongoId().withMessage('Invalid job id')],
   deleteJob
+);
+
+router.get(
+  '/:id/applications',
+  protect,
+  authorizeRoles('employer'),
+  [param('id').isMongoId().withMessage('Invalid job id')],
+  getApplicationsForJob
 );
 
 export default router;
