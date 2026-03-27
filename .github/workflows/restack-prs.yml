@@ -1,0 +1,67 @@
+name: Restack PRs
+
+# When a PR is merged, find all open PRs whose base is the merged branch
+# and automatically retarget them to the merged PR's base (e.g. main).
+#
+# Example:
+#   Stack:  feature-b → feature-a → main
+#   PR A (feature-a → main) is merged
+#   → PR B's base is changed from feature-a → main automatically
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  restack:
+    name: Retarget stacked PRs
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Retarget PRs based on merged branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const mergedBranch = context.payload.pull_request.head.ref;
+            const newBase      = context.payload.pull_request.base.ref;
+
+            const { data: stackedPRs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              state: 'open',
+              base:  mergedBranch,
+            });
+
+            if (stackedPRs.length === 0) {
+              console.log(`No open PRs targeting '${mergedBranch}' — nothing to restack.`);
+              return;
+            }
+
+            for (const pr of stackedPRs) {
+              console.log(`PR #${pr.number}: base ${mergedBranch} → ${newBase}`);
+
+              await github.rest.pulls.update({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                pull_number: pr.number,
+                base:        newBase,
+              });
+
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: pr.number,
+                body: [
+                  `**Stacked PR retargeted automatically.**`,
+                  ``,
+                  `The parent branch \`${mergedBranch}\` was merged into \`${newBase}\`.`,
+                  `This PR's base has been updated: \`${mergedBranch}\` → \`${newBase}\`.`,
+                  ``,
+                  `Please review the diff to make sure there are no conflicts before merging.`,
+                ].join('\n'),
+              });
+            }
