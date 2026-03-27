@@ -13,10 +13,20 @@ const applicationSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    jobTitle: {
+    job: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Job',
+      required: [true, 'Job reference is required'],
+    },
+    applicant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Applicant user reference is required'],
+    },
+    applicationStatus: {
       type: String,
-      required: [true, 'Job title is required'],
-      trim: true,
+      enum: ['pending', 'reviewed', 'shortlisted', 'rejected'],
+      default: 'pending',
     },
     resumePath: {
       type: String,

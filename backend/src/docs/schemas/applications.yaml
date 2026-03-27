@@ -13,15 +13,25 @@ components:
           type: string
           format: email
           example: john.doe@example.com
-        jobTitle:
+        job:
           type: string
-          example: Software Engineer
+          description: MongoDB ObjectId of the job listing
+          example: 665f1a2b3c4d5e6f7a8b9c0e
+        applicant:
+          type: string
+          description: MongoDB ObjectId of the jobseeker who submitted
+          example: 665f1a2b3c4d5e6f7a8b9c0f
+        applicationStatus:
+          type: string
+          enum: [pending, reviewed, shortlisted, rejected]
+          default: pending
+          example: pending
         resumePath:
           type: string
-          example: uploads/resume-1234567890.pdf
+          example: uploads/1234567890-resume.pdf
         coverLetterPath:
           type: string
-          example: uploads/coverletter-1234567890.pdf
+          example: uploads/1234567890-coverletter.pdf
         createdAt:
           type: string
           format: date-time
@@ -33,7 +43,7 @@ components:
 
     SubmitApplicationRequest:
       type: object
-      required: [name, email, jobTitle, resume]
+      required: [name, email, jobId, resume]
       properties:
         name:
           type: string
@@ -42,12 +52,33 @@ components:
           type: string
           format: email
           example: john.doe@example.com
-        jobTitle:
+        jobId:
           type: string
-          example: Software Engineer
+          description: MongoDB ObjectId of the job being applied to
+          example: 665f1a2b3c4d5e6f7a8b9c0e
         resume:
           type: string
           format: binary
         coverLetter:
           type: string
           format: binary
+
+    UpdateApplicationStatusRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [pending, reviewed, shortlisted, rejected]
+          example: shortlisted
+
+    UpdateApplicationStatusResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Status updated.
+        applicationStatus:
+          type: string
+          enum: [pending, reviewed, shortlisted, rejected]
+          example: shortlisted

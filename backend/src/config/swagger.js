@@ -19,6 +19,11 @@ const options = {
         description: 'Local development server',
       },
     ],
+    tags: [
+      { name: 'Auth', description: 'User registration, login, and identity' },
+      { name: 'Jobs', description: 'Job listing management' },
+      { name: 'Applications', description: 'Job application submission and employer review' },
+    ],
     components: {
       securitySchemes: {
         BearerAuth: {
