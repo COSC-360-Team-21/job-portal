@@ -59,6 +59,7 @@ export const submitApplication = async (req, res) => {
       name: name.trim(),
       email: email.trim(),
       job: jobId,
+      applicant: req.user._id,
       resumePath: req.files.resume[0].path,
       coverLetterPath: req.files.coverLetter?.[0]?.path ?? null,
     });
@@ -69,6 +70,18 @@ export const submitApplication = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: err.message || 'Failed to submit application.' });
+  }
+};
+
+export const getMyApplications = async (req, res) => {
+  try {
+    const applications = await Application.find({ applicant: req.user._id })
+      .populate('job', 'title company location workType status')
+      .sort({ createdAt: -1 });
+
+    res.json({ data: applications });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 

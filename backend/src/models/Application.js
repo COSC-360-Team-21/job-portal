@@ -18,6 +18,11 @@ const applicationSchema = new mongoose.Schema(
       ref: 'Job',
       required: [true, 'Job reference is required'],
     },
+    applicant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Applicant user reference is required'],
+    },
     applicationStatus: {
       type: String,
       enum: ['pending', 'reviewed', 'shortlisted', 'rejected'],
