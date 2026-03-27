@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import JobCard from "../components/JobCard";
 import "./JobSearch.css";
 
 const WORK_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
-
-const matches = (value, term) =>
-  String(value ?? "").toLowerCase().includes(term.toLowerCase());
 
 const formatDate = (dateStr) => {
   if (!dateStr) return null;
@@ -17,54 +15,84 @@ const formatDate = (dateStr) => {
 };
 
 const JobSearch = () => {
-  const [allJobs, setAllJobs] = useState([]);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialQ = searchParams.get("q") || "";
+
+  const [totalJobs, setTotalJobs] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(initialQ);
   const [workType, setWorkType] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeWorkType, setActiveWorkType] = useState("");
+  const [results, setResults] = useState([]);
 
+  // Fetch total count on mount + auto-search if query param present
   useEffect(() => {
-    const fetchJobs = async () => {
+    const init = async () => {
       try {
-        setLoading(true);
-        const res = await fetch("/api/jobs?limit=100");
+        const res = await fetch("/api/jobs?limit=1");
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         const json = await res.json();
-        setAllJobs(json.data ?? []);
+        setTotalJobs(json.pagination?.totalItems ?? 0);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
-    };
-    fetchJobs();
-  }, []);
 
-  const handleSubmit = (e) => {
+      // Auto-search if query param is present
+      if (initialQ) {
+        setSearching(true);
+        setSubmitted(true);
+        setSearchTerm(initialQ);
+        setInputValue("");
+        try {
+          const params = new URLSearchParams();
+          params.set("q", initialQ);
+          const res = await fetch(`/api/jobs/search?${params}`);
+          if (!res.ok) throw new Error(`Server error: ${res.status}`);
+          const json = await res.json();
+          setResults(json.data ?? []);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setSearching(false);
+        }
+      }
+    };
+    init();
+  }, [initialQ]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSearchTerm(inputValue.trim());
+    const term = inputValue.trim();
+    setSearchTerm(term);
     setActiveWorkType(workType);
     setSubmitted(true);
     setInputValue("");
-  };
+    setError(null);
+    setSearching(true);
 
-  const results = submitted
-    ? allJobs.filter((job) => {
-        if (searchTerm) {
-          const inTitle = matches(job.title, searchTerm);
-          const inCompany = matches(job.company, searchTerm);
-          const inDescription = matches(job.description, searchTerm);
-          const inReqs = (job.requirements ?? []).some((r) => matches(r, searchTerm));
-          if (!inTitle && !inCompany && !inDescription && !inReqs) return false;
-        }
-        if (activeWorkType && job.workType !== activeWorkType) return false;
-        return true;
-      })
-    : [];
+    try {
+      const params = new URLSearchParams();
+      if (term) params.set("q", term);
+      if (workType) params.set("workType", workType);
+
+      const res = await fetch(`/api/jobs/search?${params}`);
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const json = await res.json();
+      setResults(json.data ?? []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSearching(false);
+    }
+  };
 
   return (
     <div className="jsearch-page">
@@ -119,7 +147,7 @@ const JobSearch = () => {
               ))}
             </select>
 
-            <button className="jsearch-btn" type="submit" disabled={loading}>
+            <button className="jsearch-btn" type="submit" disabled={loading || searching}>
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="1.75" />
                 <path
@@ -138,7 +166,7 @@ const JobSearch = () => {
       {/*  Body  */}
       <div className="jsearch-body">
         {/* Loading */}
-        {loading && (
+        {(loading || searching) && (
           <div className="jsearch-status">
             <span className="jsearch-spinner" aria-hidden="true" />
             <span>Loading jobs…</span>
@@ -146,7 +174,7 @@ const JobSearch = () => {
         )}
 
         {/* Error */}
-        {error && !loading && (
+        {error && !loading && !searching && (
           <div className="jsearch-error" role="alert">
             <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.75" />
@@ -158,7 +186,7 @@ const JobSearch = () => {
         )}
 
         {/* Prompt (before first search) */}
-        {!loading && !error && !submitted && (
+        {!loading && !searching && !error && !submitted && (
           <div className="jsearch-prompt">
             <div className="jsearch-prompt-icon" aria-hidden="true">
               <svg viewBox="0 0 64 64" fill="none">
@@ -181,13 +209,13 @@ const JobSearch = () => {
               Enter a keyword above and hit <strong>Search Jobs</strong> to get started.
             </p>
             <p className="jsearch-prompt-hint">
-              {allJobs.length > 0 ? `${allJobs.length} jobs available` : ""}
+              {totalJobs > 0 ? `${totalJobs} jobs available` : ""}
             </p>
           </div>
         )}
 
         {/* Results */}
-        {!loading && !error && submitted && (
+        {!loading && !searching && !error && submitted && (
           <>
             <div className="jsearch-results-header">
               {results.length > 0 ? (
@@ -223,9 +251,9 @@ const JobSearch = () => {
                     workType={job.workType}
                     salary={job.salaryRange ?? null}
                     postedDate={formatDate(job.postedAt ?? job.createdAt)}
-                    skills={job.requirements ?? []}
+                    skills={job.skills ?? job.requirements ?? []}
                     onApply={() =>
-                      alert(`Applying for ${job.title} at ${job.company}`)
+                      navigate(`/apply?job=${encodeURIComponent(job.title)}`)
                     }
                   />
                 ))}

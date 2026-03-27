@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import JobCard from "../components/JobCard";
 import "./JobListings.css";
 
@@ -17,6 +18,7 @@ const formatDate = (dateStr) => {
 };
 
 const JobListings = () => {
+  const navigate = useNavigate();
   const [allJobs, setAllJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -121,9 +123,9 @@ const JobListings = () => {
                 workType={job.workType}
                 salary={job.salaryRange ?? null}
                 postedDate={formatDate(job.postedAt ?? job.createdAt)}
-                skills={job.requirements ?? []}
+                skills={job.skills ?? job.requirements ?? []}
                 onApply={() =>
-                  alert(`Applying for ${job.title} at ${job.company}`)
+                  navigate(`/apply?job=${encodeURIComponent(job.title)}`)
                 }
               />
             ))

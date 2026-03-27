@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Hero.css";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const [keyword, setKeyword] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const q = keyword.trim();
+    navigate(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+  };
+
+  const handleTrending = (tag) => {
+    navigate(`/search?q=${encodeURIComponent(tag)}`);
+  };
   return (
     <section className="jobboard-hero">
       <div className="jobboard-hero-bg-grid" />
@@ -30,10 +43,15 @@ const Hero = () => {
           </p>
 
           <div className="jobboard-hero-search-card">
-            <div className="jobboard-hero-search-grid">
+            <form className="jobboard-hero-search-grid" onSubmit={handleSearch}>
               <div className="jobboard-search-field">
                 <label>Job title or keyword</label>
-                <input type="text" placeholder="Frontend Developer, Designer, Marketing..." />
+                <input
+                  type="text"
+                  placeholder="Frontend Developer, Designer, Marketing..."
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                />
               </div>
 
               <div className="jobboard-search-field">
@@ -47,25 +65,24 @@ const Hero = () => {
                   <option value="" disabled>
                     Select type
                   </option>
-                  <option>Full-Time</option>
-                  <option>Part-Time</option>
+                  <option>Full-time</option>
+                  <option>Part-time</option>
                   <option>Internship</option>
                   <option>Contract</option>
-                  <option>Remote</option>
                 </select>
               </div>
 
-              <button className="jobboard-search-btn">Search Jobs</button>
-            </div>
+              <button type="submit" className="jobboard-search-btn">Search Jobs</button>
+            </form>
 
             <div className="jobboard-trending-row">
               <span className="jobboard-trending-label">Trending:</span>
               <div className="jobboard-trending-tags">
-                <span>Software Engineer</span>
-                <span>Data Analyst</span>
-                <span>UX Designer</span>
-                <span>Marketing Coordinator</span>
-                <span>Project Manager</span>
+                {["Software Engineer", "Data Analyst", "UX Designer", "Marketing Coordinator", "Project Manager"].map((tag) => (
+                  <span key={tag} onClick={() => handleTrending(tag)} style={{ cursor: "pointer" }}>
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
