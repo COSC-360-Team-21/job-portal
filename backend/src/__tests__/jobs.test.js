@@ -150,7 +150,11 @@ describe('GET /api/jobs/search', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data.length).toBeGreaterThanOrEqual(1);
-    expect(res.body.data.every((j) => /react/i.test(j.title + j.company + j.description))).toBe(true);
+    expect(
+      res.body.data.every((j) =>
+        /react/i.test([j.title, j.company, j.description, ...(j.requirements ?? [])].join(' '))
+      )
+    ).toBe(true);
   });
 
   it('filters by keyword in company name', async () => {
@@ -158,7 +162,11 @@ describe('GET /api/jobs/search', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data.length).toBeGreaterThanOrEqual(1);
-    expect(res.body.data.every((j) => /globex/i.test(j.title + j.company + j.description))).toBe(true);
+    expect(
+      res.body.data.every((j) =>
+        /globex/i.test([j.title, j.company, j.description, ...(j.requirements ?? [])].join(' '))
+      )
+    ).toBe(true);
   });
 
   it('filters by location', async () => {
