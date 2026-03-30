@@ -13,6 +13,16 @@ const applicationSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    phone: {
+      type: String,
+      required: [true, 'Phone number is required'],
+      trim: true,
+    },
+    additionalMessage: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     job: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Job',

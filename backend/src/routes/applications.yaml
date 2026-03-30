@@ -77,11 +77,15 @@ tags:
               missingFields:
                 summary: Missing required fields
                 value:
-                  message: Name, email, and job ID are required.
+                  message: Name, email, phone, and job ID are required.
               invalidEmail:
                 summary: Invalid email
                 value:
                   message: Please provide a valid email address.
+              invalidPhone:
+                summary: Invalid phone number
+                value:
+                  message: Please provide a valid phone number.
               missingResume:
                 summary: Resume not attached
                 value:

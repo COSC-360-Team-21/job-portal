@@ -34,15 +34,20 @@ export const upload = multer({
 
 export const submitApplication = async (req, res) => {
   try {
-    const { name, email, jobId } = req.body;
+    const { name, email, phone, jobId, additionalMessage } = req.body;
 
-    if (!name?.trim() || !email?.trim() || !jobId?.trim()) {
-      return res.status(400).json({ message: 'Name, email, and job ID are required.' });
+    if (!name?.trim() || !email?.trim() || !phone?.trim() || !jobId?.trim()) {
+      return res.status(400).json({ message: 'Name, email, phone, and job ID are required.' });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: 'Please provide a valid email address.' });
+    }
+
+    const phoneRegex = /^\+?[\d\s\-().]{7,15}$/;
+    if (!phoneRegex.test(phone.trim())) {
+      return res.status(400).json({ message: 'Please provide a valid phone number.' });
     }
 
     if (!req.files?.resume?.[0]) {
@@ -58,6 +63,8 @@ export const submitApplication = async (req, res) => {
     const application = await Application.create({
       name: name.trim(),
       email: email.trim(),
+      phone: phone.trim(),
+      additionalMessage: additionalMessage?.trim() ?? '',
       job: jobId,
       applicant: req.user._id,
       resumePath: req.files.resume[0].path,
