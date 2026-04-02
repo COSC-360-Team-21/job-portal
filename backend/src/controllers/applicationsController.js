@@ -1,7 +1,6 @@
 import path from 'path';
 import { mkdirSync } from 'fs';
 import multer from 'multer';
-import mongoose from 'mongoose';
 import { validationResult } from 'express-validator';
 import Application from '../models/Application.js';
 import Job from '../models/Job.js';
@@ -35,30 +34,11 @@ export const upload = multer({
 });
 
 export const submitApplication = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
   try {
     const { name, email, phone, jobId, additionalMessage } = req.body;
-
-    if (!name?.trim() || !email?.trim() || !phone?.trim() || !jobId?.trim()) {
-      return res.status(400).json({ message: 'Name, email, phone, and job ID are required.' });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: 'Please provide a valid email address.' });
-    }
-
-    const phoneRegex = /^\+?[\d\s\-().]{7,15}$/;
-    if (!phoneRegex.test(phone.trim())) {
-      return res.status(400).json({ message: 'Please provide a valid phone number.' });
-    }
-
-    if (!req.files?.resume?.[0]) {
-      return res.status(400).json({ message: 'Resume is required.' });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(jobId)) {
-      return res.status(400).json({ message: 'Invalid job ID format.' });
-    }
 
     const job = await Job.findById(jobId);
     if (!job) return res.status(404).json({ message: 'Job not found.' });

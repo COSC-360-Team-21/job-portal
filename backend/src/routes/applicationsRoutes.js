@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { param, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import {
   upload,
   submitApplication,
@@ -19,6 +19,19 @@ router.post(
     { name: 'resume', maxCount: 1 },
     { name: 'coverLetter', maxCount: 1 },
   ]),
+  [
+    body('name').trim().notEmpty().withMessage('Name is required.'),
+    body('email').trim().notEmpty().withMessage('Email is required.')
+      .isEmail().withMessage('Please provide a valid email address.'),
+    body('phone').trim().notEmpty().withMessage('Phone is required.')
+      .matches(/^\+?[\d\s\-().]{7,15}$/).withMessage('Please provide a valid phone number.'),
+    body('jobId').trim().notEmpty().withMessage('Job ID is required.')
+      .isMongoId().withMessage('Invalid job ID format.'),
+    body('resume').custom((_, { req }) => {
+      if (!req.files?.resume?.[0]) throw new Error('Resume is required.');
+      return true;
+    }),
+  ],
   submitApplication
 );
 
