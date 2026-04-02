@@ -1,34 +1,180 @@
 tags:
   - name: Applications
-    description: Job application submission
+    description: Job application submission and employer review
+
+/api/applications/my:
+  get:
+    summary: Get my applications
+    description: Jobseeker-only. Returns all applications submitted by the authenticated jobseeker, with job details and current status.
+    tags: [Applications]
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: List of the jobseeker's applications
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Application'
+      401:
+        description: Unauthorized (missing or invalid token)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not a jobseeker)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
 
 /api/applications:
   post:
     summary: Submit a job application
+    description: Jobseeker-only. Submits a new application for an active job listing.
     tags: [Applications]
+    security:
+      - BearerAuth: []
     requestBody:
       required: true
       content:
         multipart/form-data:
           schema:
-            type: object
-            required: [name, email, jobTitle, resume]
-            properties:
-              name:
-                type: string
-              email:
-                type: string
-                format: email
-              jobTitle:
-                type: string
-              resume:
-                type: string
-                format: binary
-              coverLetter:
-                type: string
-                format: binary
+            $ref: '#/components/schemas/SubmitApplicationRequest'
     responses:
       201:
-        description: Application submitted
+        description: Application submitted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Application submitted successfully!
+                applicationId:
+                  type: string
+                  example: 665f1a2b3c4d5e6f7a8b9c0d
       400:
-        description: Validation error
+        description: Validation error or job not active
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            examples:
+              missingFields:
+                summary: Missing required fields
+                value:
+                  message: Name, email, phone, and job ID are required.
+              invalidEmail:
+                summary: Invalid email
+                value:
+                  message: Please provide a valid email address.
+              invalidPhone:
+                summary: Invalid phone number
+                value:
+                  message: Please provide a valid phone number.
+              missingResume:
+                summary: Resume not attached
+                value:
+                  message: Resume is required.
+              jobClosed:
+                summary: Job is no longer active
+                value:
+                  message: This job is no longer accepting applications.
+      401:
+        description: Unauthorized (missing or invalid token)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not a jobseeker)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      404:
+        description: Job not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            example:
+              message: Job not found.
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/api/applications/{id}/status:
+  patch:
+    summary: Update application status
+    description: Employer-only. Updates the review status of an application for a job they own.
+    tags: [Applications]
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: MongoDB ObjectId of the application
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateApplicationStatusRequest'
+    responses:
+      200:
+        description: Status updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationStatusResponse'
+      400:
+        description: Invalid status value or invalid application id
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      401:
+        description: Unauthorized (missing or invalid token)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not employer or does not own the job)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      404:
+        description: Application not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'

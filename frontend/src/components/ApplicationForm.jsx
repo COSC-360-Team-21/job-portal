@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './ApplicationForm.css';
 
 const ApplicationForm = () => {
   const [searchParams] = useSearchParams();
   const jobTitle = searchParams.get('job') || '';
+  const jobId = searchParams.get('jobId') || '';
+  const { token } = useAuth();
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    jobTitle: jobTitle,
+    phone: '',
+    additionalMessage: '',
   });
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState(null);
@@ -23,18 +27,32 @@ const ApplicationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus({ type: '', message: '' });
+
+    if (!token) {
+      setStatus({ type: 'error', message: 'You must be logged in to apply.' });
+      return;
+    }
+
+    if (!jobId) {
+      setStatus({ type: 'error', message: 'Invalid job reference. Please go back and try again.' });
+      return;
+    }
+
     setSubmitting(true);
 
     const body = new FormData();
     body.append('name', formData.name);
     body.append('email', formData.email);
-    body.append('jobTitle', formData.jobTitle);
+    body.append('phone', formData.phone);
+    body.append('jobId', jobId);
+    body.append('additionalMessage', formData.additionalMessage);
     if (resume) body.append('resume', resume);
     if (coverLetter) body.append('coverLetter', coverLetter);
 
     try {
       const res = await fetch('/api/applications', {
         method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
         body,
       });
 
@@ -42,7 +60,7 @@ const ApplicationForm = () => {
 
       if (res.ok) {
         setStatus({ type: 'success', message: data.message || 'Application submitted successfully!' });
-        setFormData({ name: '', email: '', jobTitle: '' });
+        setFormData({ name: '', email: '', phone: '', additionalMessage: '' });
         setResume(null);
         setCoverLetter(null);
         // reset file inputs
@@ -76,6 +94,17 @@ const ApplicationForm = () => {
         )}
 
         <form className="jobboard-login-form" onSubmit={handleSubmit}>
+          {/* Position (display-only) */}
+          {jobTitle && (
+            <div className="jobboard-form-group">
+              <label>Position Applying For</label>
+              <div className="jobboard-input-wrapper">
+                <span className="jobboard-input-icon">💼</span>
+                <input type="text" value={jobTitle} disabled />
+              </div>
+            </div>
+          )}
+
           {/* Applicant Name */}
           <div className="jobboard-form-group">
             <label htmlFor="name">Full Name</label>
@@ -110,19 +139,36 @@ const ApplicationForm = () => {
             </div>
           </div>
 
-          {/* Job Title / Position */}
+          {/* Phone */}
           <div className="jobboard-form-group">
-            <label htmlFor="jobTitle">Position Applying For</label>
+            <label htmlFor="phone">Phone Number</label>
             <div className="jobboard-input-wrapper">
-              <span className="jobboard-input-icon">💼</span>
+              <span className="jobboard-input-icon">📞</span>
               <input
-                id="jobTitle"
-                name="jobTitle"
-                type="text"
-                placeholder="e.g. Frontend Developer"
-                value={formData.jobTitle}
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="+1 555 123 4567"
+                value={formData.phone}
                 onChange={handleChange}
                 required
+              />
+            </div>
+          </div>
+
+          {/* Additional Message */}
+          <div className="jobboard-form-group">
+            <label htmlFor="additionalMessage">Additional Message</label>
+            <div className="jobboard-input-wrapper">
+              <span className="jobboard-input-icon">💬</span>
+              <textarea
+                id="additionalMessage"
+                name="additionalMessage"
+                placeholder="Tell us why you're interested in this role…"
+                value={formData.additionalMessage}
+                onChange={handleChange}
+                rows={3}
+                style={{ resize: 'vertical' }}
               />
             </div>
           </div>

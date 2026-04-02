@@ -253,7 +253,7 @@ const JobSearch = () => {
                     postedDate={formatDate(job.postedAt ?? job.createdAt)}
                     skills={job.skills ?? job.requirements ?? []}
                     onApply={() =>
-                      navigate(`/apply?job=${encodeURIComponent(job.title)}`)
+                      navigate(`/apply?job=${encodeURIComponent(job.title)}&jobId=${job._id}`)
                     }
                   />
                 ))}

@@ -1,7 +1,10 @@
 import path from 'path';
 import { mkdirSync } from 'fs';
 import multer from 'multer';
+import mongoose from 'mongoose';
+import { validationResult } from 'express-validator';
 import Application from '../models/Application.js';
+import Job from '../models/Job.js';
 
 // Ensure uploads directory exists
 const uploadDir = 'uploads';
@@ -33,10 +36,10 @@ export const upload = multer({
 
 export const submitApplication = async (req, res) => {
   try {
-    const { name, email, jobTitle } = req.body;
+    const { name, email, phone, jobId, additionalMessage } = req.body;
 
-    if (!name?.trim() || !email?.trim() || !jobTitle?.trim()) {
-      return res.status(400).json({ message: 'Name, email, and job title are required.' });
+    if (!name?.trim() || !email?.trim() || !phone?.trim() || !jobId?.trim()) {
+      return res.status(400).json({ message: 'Name, email, phone, and job ID are required.' });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,14 +47,32 @@ export const submitApplication = async (req, res) => {
       return res.status(400).json({ message: 'Please provide a valid email address.' });
     }
 
+    const phoneRegex = /^\+?[\d\s\-().]{7,15}$/;
+    if (!phoneRegex.test(phone.trim())) {
+      return res.status(400).json({ message: 'Please provide a valid phone number.' });
+    }
+
     if (!req.files?.resume?.[0]) {
       return res.status(400).json({ message: 'Resume is required.' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(jobId)) {
+      return res.status(400).json({ message: 'Invalid job ID format.' });
+    }
+
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ message: 'Job not found.' });
+    if (job.status !== 'active') {
+      return res.status(400).json({ message: 'This job is no longer accepting applications.' });
     }
 
     const application = await Application.create({
       name: name.trim(),
       email: email.trim(),
-      jobTitle: jobTitle.trim(),
+      phone: phone.trim(),
+      additionalMessage: additionalMessage?.trim() ?? '',
+      job: jobId,
+      applicant: req.user._id,
       resumePath: req.files.resume[0].path,
       coverLetterPath: req.files.coverLetter?.[0]?.path ?? null,
     });
@@ -62,5 +83,69 @@ export const submitApplication = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: err.message || 'Failed to submit application.' });
+  }
+};
+
+export const getMyApplications = async (req, res) => {
+  try {
+    const applications = await Application.find({ applicant: req.user._id })
+      .populate('job', 'title company location workType status')
+      .sort({ createdAt: -1 });
+
+    res.json({ data: applications });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getApplicationsForJob = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) return res.status(404).json({ message: 'Job not found.' });
+
+    if (job.postedBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Forbidden: you can only view applications for your own jobs.' });
+    }
+
+    const applications = await Application.find({ job: req.params.id })
+      .populate('applicant', 'name email')
+      .sort({ createdAt: -1 });
+    res.json({ data: applications });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateApplicationStatus = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { status } = req.body;
+    const allowed = ['pending', 'reviewed', 'shortlisted', 'rejected'];
+    if (!allowed.includes(status)) {
+      return res.status(400).json({ message: `Status must be one of: ${allowed.join(', ')}.` });
+    }
+
+    const application = await Application.findById(req.params.id).populate('job');
+    if (!application) return res.status(404).json({ message: 'Application not found.' });
+
+    if (application.job.postedBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Forbidden: you can only update applications for your own jobs.' });
+    }
+
+    application.applicationStatus = status;
+    await application.save();
+
+    res.json({ message: 'Status updated.', applicationStatus: application.applicationStatus });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
