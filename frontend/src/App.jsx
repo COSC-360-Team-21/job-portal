@@ -10,6 +10,8 @@ import ApplicationForm from './components/ApplicationForm';
 
 import JobListings from './pages/JobListings';
 import JobSearch from './pages/JobSearch';
+import JobDetail from './pages/JobDetail';
+import Industries from './pages/Industries';
 
 Placeholder.propTypes = { title: PropTypes.string.isRequired };
 function Placeholder({ title }) {
