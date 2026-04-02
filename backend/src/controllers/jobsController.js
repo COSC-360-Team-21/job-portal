@@ -94,6 +94,40 @@ export const updateJob = async (req, res) => {
   }
 };
 
+export const searchJobs = async (req, res) => {
+  try {
+    const { q, location, workType } = req.query;
+    const filter = {};
+
+    if (q) {
+      const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(escaped, 'i');
+      filter.$or = [
+        { title: regex },
+        { company: regex },
+        { description: regex },
+        { skills: regex },
+        { requirements: regex },
+      ];
+    }
+
+    if (location) {
+      const escaped = location.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.location = new RegExp(escaped, 'i');
+    }
+
+    if (workType) {
+      filter.workType = workType;
+    }
+
+    const jobs = await Job.find(filter).sort({ createdAt: -1 });
+
+    res.json({ data: jobs, total: jobs.length });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const deleteJob = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

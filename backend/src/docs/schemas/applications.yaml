@@ -1,0 +1,53 @@
+components:
+  schemas:
+    Application:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 665f1a2b3c4d5e6f7a8b9c0d
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        jobTitle:
+          type: string
+          example: Software Engineer
+        resumePath:
+          type: string
+          example: uploads/resume-1234567890.pdf
+        coverLetterPath:
+          type: string
+          example: uploads/coverletter-1234567890.pdf
+        createdAt:
+          type: string
+          format: date-time
+          example: 2026-03-27T10:00:00.000Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2026-03-27T10:00:00.000Z
+
+    SubmitApplicationRequest:
+      type: object
+      required: [name, email, jobTitle, resume]
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        jobTitle:
+          type: string
+          example: Software Engineer
+        resume:
+          type: string
+          format: binary
+        coverLetter:
+          type: string
+          format: binary

@@ -4,6 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 import authRoutes from './routes/authRoutes.js';
 import jobsRoutes from './routes/jobsRoutes.js';
+import applicationsRoutes from './routes/applicationsRoutes.js';
 
 const app = express();
 
@@ -41,5 +42,6 @@ app.get('/api/docs.json', (_req, res) => {
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobsRoutes);
+app.use('/api/applications', applicationsRoutes);
 
 export default app;
