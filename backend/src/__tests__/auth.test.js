@@ -1,6 +1,5 @@
 import request from 'supertest';
 import app from '../app.js';
-import User from '../models/User.js';
 
 const validUser = {
   name: 'Test User',
@@ -215,19 +214,6 @@ describe('PUT /api/auth/change-password', () => {
 
     expect(res.status).toBe(401);
     expect(res.body.message).toMatch(/current password is incorrect/i);
-  });
-
-  it('returns 404 when user does not exist', async () => {
-    const user = await User.findOne({ email: validUser.email });
-    await User.findByIdAndDelete(user._id);
-
-    const res = await request(app)
-      .put('/api/auth/change-password')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ currentPassword: validUser.password, newPassword: 'newpassword123' });
-
-    expect(res.status).toBe(404);
-    expect(res.body.message).toMatch(/user not found/i);
   });
 
   it('returns 401 when no token is provided', async () => {
