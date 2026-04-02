@@ -1,7 +1,20 @@
-import React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Hero.css";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const [heroQuery, setHeroQuery] = useState("");
+  const [heroWorkType, setHeroWorkType] = useState("");
+
+  const handleHeroSearch = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (heroQuery.trim()) params.set("q", heroQuery.trim());
+    if (heroWorkType) params.set("workType", heroWorkType);
+    navigate(`/search?${params.toString()}`);
+  };
+
   return (
     <section className="jobboard-hero">
       <div className="jobboard-hero-bg-grid" />
@@ -30,10 +43,15 @@ const Hero = () => {
           </p>
 
           <div className="jobboard-hero-search-card">
-            <div className="jobboard-hero-search-grid">
+            <form className="jobboard-hero-search-grid" onSubmit={handleHeroSearch}>
               <div className="jobboard-search-field">
                 <label>Job title or keyword</label>
-                <input type="text" placeholder="Frontend Developer, Designer, Marketing..." />
+                <input
+                  type="text"
+                  placeholder="Frontend Developer, Designer, Marketing..."
+                  value={heroQuery}
+                  onChange={(e) => setHeroQuery(e.target.value)}
+                />
               </div>
 
               <div className="jobboard-search-field">
@@ -43,20 +61,17 @@ const Hero = () => {
 
               <div className="jobboard-search-field">
                 <label>Work type</label>
-                <select defaultValue="">
-                  <option value="" disabled>
-                    Select type
-                  </option>
-                  <option>Full-Time</option>
-                  <option>Part-Time</option>
-                  <option>Internship</option>
-                  <option>Contract</option>
-                  <option>Remote</option>
+                <select value={heroWorkType} onChange={(e) => setHeroWorkType(e.target.value)}>
+                  <option value="">Select type</option>
+                  <option value="Full-time">Full-Time</option>
+                  <option value="Part-time">Part-Time</option>
+                  <option value="Internship">Internship</option>
+                  <option value="Contract">Contract</option>
                 </select>
               </div>
 
-              <button className="jobboard-search-btn">Search Jobs</button>
-            </div>
+              <button type="submit" className="jobboard-search-btn">Search Jobs</button>
+            </form>
 
             <div className="jobboard-trending-row">
               <span className="jobboard-trending-label">Trending:</span>

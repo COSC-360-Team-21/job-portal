@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import JobCard from "../components/JobCard";
 import "./JobSearch.css";
 
@@ -17,15 +18,19 @@ const formatDate = (dateStr) => {
 };
 
 const JobSearch = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [allJobs, setAllJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [inputValue, setInputValue] = useState("");
-  const [workType, setWorkType] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeWorkType, setActiveWorkType] = useState("");
+  const initialQ = searchParams.get("q") ?? "";
+  const initialWorkType = searchParams.get("workType") ?? "";
+  const [inputValue, setInputValue] = useState(initialQ);
+  const [workType, setWorkType] = useState(initialWorkType);
+  const [submitted, setSubmitted] = useState(initialQ !== "" || initialWorkType !== "");
+  const [searchTerm, setSearchTerm] = useState(initialQ);
+  const [activeWorkType, setActiveWorkType] = useState(initialWorkType);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -224,9 +229,7 @@ const JobSearch = () => {
                     salary={job.salaryRange ?? null}
                     postedDate={formatDate(job.postedAt ?? job.createdAt)}
                     skills={job.requirements ?? []}
-                    onApply={() =>
-                      alert(`Applying for ${job.title} at ${job.company}`)
-                    }
+                    onApply={() => navigate(`/jobs/${job._id}`)}
                   />
                 ))}
               </div>
