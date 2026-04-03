@@ -33,7 +33,7 @@ const MyApplications = () => {
 
     const fetchApplications = async () => {
       try {
-        const res = await fetch('/api/applications/my', {
+        const res = await fetch('/api/applications/mine', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`Server error: ${res.status}`);

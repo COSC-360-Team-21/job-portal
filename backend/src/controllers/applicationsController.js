@@ -1,7 +1,6 @@
 import path from 'path';
 import { mkdirSync } from 'fs';
 import multer from 'multer';
-import mongoose from 'mongoose';
 import { validationResult } from 'express-validator';
 import Application from '../models/Application.js';
 import Job from '../models/Job.js';
@@ -35,30 +34,11 @@ export const upload = multer({
 });
 
 export const submitApplication = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
   try {
     const { name, email, phone, jobId, additionalMessage } = req.body;
-
-    if (!name?.trim() || !email?.trim() || !phone?.trim() || !jobId?.trim()) {
-      return res.status(400).json({ message: 'Name, email, phone, and job ID are required.' });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: 'Please provide a valid email address.' });
-    }
-
-    const phoneRegex = /^\+?[\d\s\-().]{7,15}$/;
-    if (!phoneRegex.test(phone.trim())) {
-      return res.status(400).json({ message: 'Please provide a valid phone number.' });
-    }
-
-    if (!req.files?.resume?.[0]) {
-      return res.status(400).json({ message: 'Resume is required.' });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(jobId)) {
-      return res.status(400).json({ message: 'Invalid job ID format.' });
-    }
 
     const job = await Job.findById(jobId);
     if (!job) return res.status(404).json({ message: 'Job not found.' });
@@ -88,34 +68,98 @@ export const submitApplication = async (req, res) => {
 
 export const getMyApplications = async (req, res) => {
   try {
-    const applications = await Application.find({ applicant: req.user._id })
-      .populate('job', 'title company location workType status')
-      .sort({ createdAt: -1 });
+    const page = Number.parseInt(req.query.page, 10) || 1;
+    const limit = Number.parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
 
-    res.json({ data: applications });
+    const filter = { applicant: req.user._id };
+
+    const [applications, totalItems] = await Promise.all([
+      Application.find(filter)
+        .populate('job', 'title company location workType status')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Application.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.max(Math.ceil(totalItems / limit), 1);
+
+    res.json({
+      data: applications,
+      pagination: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-export const getApplicationsForJob = async (req, res) => {
+
+export const getReceivedApplications = async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
-    const job = await Job.findById(req.params.id);
-    if (!job) return res.status(404).json({ message: 'Job not found.' });
+    const page = Number.parseInt(req.query.page, 10) || 1;
+    const limit = Number.parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
 
-    if (job.postedBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Forbidden: you can only view applications for your own jobs.' });
+    const employerJobs = await Job.find({ postedBy: req.user._id }, '_id').lean();
+    const jobIds = employerJobs.map((j) => j._id);
+
+    if (jobIds.length === 0) {
+      return res.json({
+        data: [],
+        pagination: { page, limit, totalItems: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false },
+      });
     }
 
-    const applications = await Application.find({ job: req.params.id })
-      .populate('applicant', 'name email')
-      .sort({ createdAt: -1 });
-    res.json({ data: applications });
+    const filter = { job: { $in: jobIds } };
+
+    if (req.query.applicationStatus) filter.applicationStatus = req.query.applicationStatus;
+
+    if (req.query.jobId) {
+      const isOwned = jobIds.some((id) => id.toString() === req.query.jobId);
+      if (!isOwned) return res.status(403).json({ message: 'Forbidden: that job does not belong to you.' });
+      filter.job = req.query.jobId;
+    }
+
+    if (req.query.search) {
+      const escaped = req.query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(escaped, 'i');
+      filter.$or = [{ name: regex }, { email: regex }];
+    }
+
+    const [applications, totalItems] = await Promise.all([
+      Application.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('job', 'title company')
+        .populate('applicant', 'name email'),
+      Application.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.max(Math.ceil(totalItems / limit), 1);
+
+    res.json({
+      data: applications,
+      pagination: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

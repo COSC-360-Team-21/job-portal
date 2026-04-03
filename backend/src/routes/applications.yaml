@@ -1,17 +1,37 @@
 tags:
-  - name: Applications
-    description: Job application submission and employer review
+  - name: Applications – Jobseeker
+    description: Submit applications and track your own
+  - name: Applications – Employer
+    description: Review applications received on your job listings
 
-/api/applications/my:
+/api/applications/mine:
   get:
     summary: Get my applications
-    description: Jobseeker-only. Returns all applications submitted by the authenticated jobseeker, with job details and current status.
-    tags: [Applications]
+    description: Jobseeker-only. Returns all applications submitted by the authenticated jobseeker, paginated, with job details and current status.
+    tags: [Applications – Jobseeker]
     security:
       - BearerAuth: []
+    parameters:
+      - in: query
+        name: page
+        required: false
+        description: Page number (starts at 1)
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - in: query
+        name: limit
+        required: false
+        description: Number of records per page
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
     responses:
       200:
-        description: List of the jobseeker's applications
+        description: Paginated list of the jobseeker's applications
         content:
           application/json:
             schema:
@@ -21,6 +41,8 @@ tags:
                   type: array
                   items:
                     $ref: '#/components/schemas/Application'
+                pagination:
+                  $ref: '#/components/schemas/Pagination'
       401:
         description: Unauthorized (missing or invalid token)
         content:
@@ -40,11 +62,92 @@ tags:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
+/api/applications/received:
+  get:
+    summary: Get all received applications
+    description: Employer-only. Returns all applications across all the authenticated employer's job listings, paginated. Optionally filter by status, job, or applicant name/email.
+    tags: [Applications – Employer]
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: query
+        name: applicationStatus
+        required: false
+        description: Filter by application status
+        schema:
+          type: string
+          enum: [pending, reviewed, shortlisted, rejected]
+      - in: query
+        name: jobId
+        required: false
+        description: Narrow to applications for a specific job (must be owned by the employer)
+        schema:
+          type: string
+      - in: query
+        name: search
+        required: false
+        description: Search applicant name or email (case-insensitive)
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+    responses:
+      200:
+        description: Paginated list of received applications
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Application'
+                pagination:
+                  $ref: '#/components/schemas/Pagination'
+      400:
+        description: Validation error (invalid query params)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationErrorResponse'
+      401:
+        description: Unauthorized (missing or invalid token)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not an employer, or jobId belongs to another employer)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
 /api/applications:
   post:
     summary: Submit a job application
     description: Jobseeker-only. Submits a new application for an active job listing.
-    tags: [Applications]
+    tags: [Applications – Jobseeker]
     security:
       - BearerAuth: []
     requestBody:
@@ -125,7 +228,7 @@ tags:
   patch:
     summary: Update application status
     description: Employer-only. Updates the review status of an application for a job they own.
-    tags: [Applications]
+    tags: [Applications – Employer]
     security:
       - BearerAuth: []
     parameters:

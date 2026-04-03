@@ -30,6 +30,7 @@ const JobSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeWorkType, setActiveWorkType] = useState("");
   const [results, setResults] = useState([]);
+  const [totalResults, setTotalResults] = useState(0);
 
   // Fetch total count on mount + auto-search if query param present
   useEffect(() => {
@@ -54,10 +55,12 @@ const JobSearch = () => {
         try {
           const params = new URLSearchParams();
           params.set("q", initialQ);
-          const res = await fetch(`/api/jobs/search?${params}`);
+          params.set("limit", "100");
+          const res = await fetch(`/api/jobs?${params}`);
           if (!res.ok) throw new Error(`Server error: ${res.status}`);
           const json = await res.json();
           setResults(json.data ?? []);
+          setTotalResults(json.pagination?.totalItems ?? 0);
         } catch (err) {
           setError(err.message);
         } finally {
@@ -82,11 +85,13 @@ const JobSearch = () => {
       const params = new URLSearchParams();
       if (term) params.set("q", term);
       if (workType) params.set("workType", workType);
+      params.set("limit", "100");
 
-      const res = await fetch(`/api/jobs/search?${params}`);
+      const res = await fetch(`/api/jobs?${params}`);
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const json = await res.json();
       setResults(json.data ?? []);
+      setTotalResults(json.pagination?.totalItems ?? 0);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -218,10 +223,10 @@ const JobSearch = () => {
         {!loading && !searching && !error && submitted && (
           <>
             <div className="jsearch-results-header">
-              {results.length > 0 ? (
+              {totalResults > 0 ? (
                 <>
                   <span className="jsearch-results-count">
-                    {results.length} result{results.length !== 1 ? "s" : ""}
+                    {totalResults} result{totalResults !== 1 ? "s" : ""}
                   </span>
                   {(searchTerm || activeWorkType) && (
                     <span className="jsearch-results-for">

@@ -243,6 +243,87 @@ components:
               type: boolean
               example: false
 
+    MyJobListing:
+      type: object
+      description: A job listing as seen by its owner (no populated postedBy field)
+      properties:
+        _id:
+          type: string
+          example: 665f1a2b3c4d5e6f7a8b9c0d
+        title:
+          type: string
+          example: Software Engineer
+        company:
+          type: string
+          example: Tech Corp
+        location:
+          type: string
+          example: New York, NY
+        description:
+          type: string
+          example: We are looking for a skilled Software Engineer...
+        requirements:
+          type: array
+          items:
+            type: string
+          example: [3+ years of experience with Node.js, Experience with MongoDB]
+        salaryRange:
+          type: string
+          example: $80,000 - $120,000
+        workType:
+          type: string
+          enum: [Full-time, Part-time, Contract, Internship]
+          example: Full-time
+        status:
+          type: string
+          enum: [active, closed]
+          example: active
+        postedAt:
+          type: string
+          format: date-time
+          example: '2025-06-01T10:00:00.000Z'
+        applicationDeadline:
+          type: string
+          format: date-time
+          example: '2025-07-01T00:00:00.000Z'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2025-06-01T10:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2025-06-01T10:00:00.000Z'
+
+    PaginatedMyJobsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MyJobListing'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+              example: 1
+            limit:
+              type: integer
+              example: 10
+            totalItems:
+              type: integer
+              example: 5
+            totalPages:
+              type: integer
+              example: 1
+            hasNextPage:
+              type: boolean
+              example: false
+            hasPrevPage:
+              type: boolean
+              example: false
+
     CreateJobRequest:
       type: object
       required: [title, company, location, description, workType]

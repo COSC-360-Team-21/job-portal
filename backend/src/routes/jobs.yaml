@@ -1,11 +1,13 @@
 tags:
-  - name: Jobs
-    description: Job listing management
+  - name: Jobs – Public
+    description: Browse and search job listings (no auth required)
+  - name: Jobs – Employer
+    description: Create, update, and delete your own job listings
 
 /api/jobs:
   post:
     summary: Create a new job listing
-    tags: [Jobs]
+    tags: [Jobs – Employer]
     security:
       - BearerAuth: []
     requestBody:
@@ -36,11 +38,11 @@ tags:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
       403:
-        description: Forbidden (not employer or not owner of job)
+        description: Forbidden (not an employer)
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ErrorResponse'      
+              $ref: '#/components/schemas/ErrorResponse'
       500:
         description: Server error
         content:
@@ -50,8 +52,30 @@ tags:
 
   get:
     summary: Get paginated job listings
-    tags: [Jobs]
+    description: Public. Returns paginated job listings. All filter params are optional — omitting them returns all jobs.
+    tags: [Jobs – Public]
     parameters:
+      - in: query
+        name: q
+        required: false
+        description: Keyword search across title, company, description, skills, and requirements (case-insensitive)
+        schema:
+          type: string
+        example: software engineer
+      - in: query
+        name: location
+        required: false
+        description: Filter by location (partial match, case-insensitive)
+        schema:
+          type: string
+        example: New York
+      - in: query
+        name: workType
+        required: false
+        description: Filter by work type
+        schema:
+          type: string
+          enum: [Full-time, Part-time, Contract, Internship]
       - in: query
         name: page
         required: false
@@ -89,38 +113,61 @@ tags:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
-/api/jobs/{id}/applications:
+/api/jobs/mine:
   get:
-    summary: Get all applications for a job
-    description: Employer-only. Returns all applications submitted for a job listing owned by the authenticated employer.
-    tags: [Jobs]
+    summary: Get my job listings
+    description: >
+      Returns paginated jobs posted by the authenticated employer.
+      Supports optional keyword search and status filtering.
+    tags: [Jobs – Employer]
     security:
       - BearerAuth: []
     parameters:
-      - in: path
-        name: id
-        required: true
-        description: MongoDB ObjectId of the job listing
+      - in: query
+        name: q
+        required: false
+        description: Keyword search across title, company, description, skills, and requirements (case-insensitive)
         schema:
           type: string
+        example: engineer
+      - in: query
+        name: status
+        required: false
+        description: Filter by job status
+        schema:
+          type: string
+          enum: [active, closed]
+        example: active
+      - in: query
+        name: page
+        required: false
+        description: Page number (starts at 1)
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - in: query
+        name: limit
+        required: false
+        description: Number of records per page
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
     responses:
       200:
-        description: List of applications for the job
+        description: Paginated list of the employer's own job listings
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                data:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Application'
+              $ref: '#/components/schemas/PaginatedMyJobsResponse'
       400:
-        description: Invalid job id
+        description: Validation error (invalid query params)
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ErrorResponse'
+              $ref: '#/components/schemas/ValidationErrorResponse'
       401:
         description: Unauthorized (missing or invalid token)
         content:
@@ -128,13 +175,7 @@ tags:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
       403:
-        description: Forbidden (not employer or does not own the job)
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      404:
-        description: Job not found
+        description: Forbidden (employer role required)
         content:
           application/json:
             schema:
@@ -149,7 +190,7 @@ tags:
 /api/jobs/{id}:
   put:
     summary: Update a job listing
-    tags: [Jobs]
+    tags: [Jobs – Employer]
     security:
       - BearerAuth: []
     parameters:
@@ -232,7 +273,7 @@ tags:
 
   delete:
     summary: Delete a job listing
-    tags: [Jobs]
+    tags: [Jobs – Employer]
     security:
       - BearerAuth: []
     parameters:

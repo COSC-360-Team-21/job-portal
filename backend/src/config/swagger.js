@@ -20,9 +20,12 @@ const options = {
       },
     ],
     tags: [
-      { name: 'Auth', description: 'User registration, login, and identity' },
-      { name: 'Jobs', description: 'Job listing management' },
-      { name: 'Applications', description: 'Job application submission and employer review' },
+      { name: 'Auth',                     description: 'Register, login, and identity' },
+      { name: 'Jobs – Public',            description: 'Browse and search job listings (no auth required)' },
+      { name: 'Jobs – Employer',          description: 'Create, update, and delete your own job listings' },
+      { name: 'Applications – Jobseeker', description: 'Submit applications and track your own' },
+      { name: 'Applications – Employer',  description: 'Review applications received on your job listings' },
+      { name: 'Admin',                    description: 'Platform-wide management (admin role only)' },
     ],
     components: {
       securitySchemes: {
