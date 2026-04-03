@@ -43,3 +43,25 @@ export const getMe = async (req, res) => {
   const { _id: id, name, email, role } = req.user;
   res.json({ id, name, email, role });
 };
+
+export const changePassword = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await User.findById(req.user._id).select('+password');
+
+    if (!(await user.matchPassword(currentPassword))) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

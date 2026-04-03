@@ -59,3 +59,15 @@ components:
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         user:
           $ref: '#/components/schemas/User'
+
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          example: oldSecret123
+        newPassword:
+          type: string
+          minLength: 6
+          example: newSecret456

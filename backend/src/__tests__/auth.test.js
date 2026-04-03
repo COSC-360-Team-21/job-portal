@@ -159,3 +159,68 @@ describe('GET /api/auth/me', () => {
     expect(res.status).toBe(401);
   });
 });
+
+// ─── Change Password ──────────────────────────────────────────────────────────
+
+describe('PUT /api/auth/change-password', () => {
+  let token;
+
+  beforeEach(async () => {
+    token = await registerAndGetToken();
+  });
+
+  it('returns 200 and updates password with valid input', async () => {
+    const res = await request(app)
+      .put('/api/auth/change-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ currentPassword: validUser.password, newPassword: 'newpassword123' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toMatch(/updated successfully/i);
+  });
+
+  it('allows login with the new password after change', async () => {
+    await request(app)
+      .put('/api/auth/change-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ currentPassword: validUser.password, newPassword: 'newpassword123' });
+
+    const loginRes = await request(app)
+      .post('/api/auth/login')
+      .send({ email: validUser.email, password: 'newpassword123' });
+
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body.token).toBeDefined();
+  });
+
+  it('rejects login with the old password after change', async () => {
+    await request(app)
+      .put('/api/auth/change-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ currentPassword: validUser.password, newPassword: 'newpassword123' });
+
+    const loginRes = await request(app)
+      .post('/api/auth/login')
+      .send({ email: validUser.email, password: validUser.password });
+
+    expect(loginRes.status).toBe(401);
+  });
+
+  it('returns 401 when currentPassword is wrong', async () => {
+    const res = await request(app)
+      .put('/api/auth/change-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ currentPassword: 'wrongpassword', newPassword: 'newpassword123' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toMatch(/current password is incorrect/i);
+  });
+
+  it('returns 401 when no token is provided', async () => {
+    const res = await request(app)
+      .put('/api/auth/change-password')
+      .send({ currentPassword: validUser.password, newPassword: 'newpassword123' });
+
+    expect(res.status).toBe(401);
+  });
+});
