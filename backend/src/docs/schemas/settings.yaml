@@ -1,0 +1,24 @@
+components:
+  schemas:
+    UpdateEmailRequest:
+      type: object
+      required: [newEmail, password]
+      properties:
+        newEmail:
+          type: string
+          format: email
+          description: The new email address to assign to the account
+          example: alice.new@example.com
+        password:
+          type: string
+          description: Current account password to confirm the change
+          example: secret123
+
+    DeleteAccountRequest:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+          description: Current account password to confirm deletion
+          example: secret123

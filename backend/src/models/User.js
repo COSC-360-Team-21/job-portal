@@ -26,6 +26,21 @@ const userSchema = new mongoose.Schema(
       enum: ['jobseeker', 'employer'],
       default: 'jobseeker',
     },
+    profile: {
+      phone:              { type: String, trim: true },
+      location:           { type: String, trim: true },
+      bio:                { type: String, maxlength: 500 },
+      contactEmail:       { type: String, lowercase: true, trim: true },
+      companyName:        { type: String, trim: true },
+      companyDescription: { type: String },
+      industry:           { type: String, trim: true },
+      companySize: {
+        type: String,
+        enum: ['1-10', '11-50', '51-200', '201-500', '501-1000', '1001+'],
+      },
+      websiteUrl:      { type: String, trim: true },
+      companyLocation: { type: String, trim: true },
+    },
   },
   { timestamps: true }
 );

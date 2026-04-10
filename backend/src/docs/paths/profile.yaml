@@ -1,0 +1,121 @@
+/api/profile:
+  get:
+    summary: Get the authenticated user's profile
+    tags: [Profile]
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: Returns the user's profile data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileResponse'
+            examples:
+              jobseeker:
+                summary: Jobseeker profile
+                value:
+                  id: 665f1a2b3c4d5e6f7a8b9c0d
+                  name: Alice Smith
+                  email: alice@example.com
+                  role: jobseeker
+                  profile:
+                    phone: '+1 555 123 4567'
+                    location: Vancouver, BC
+                    bio: Passionate software developer with 5 years of experience.
+                  createdAt: '2024-01-15T10:30:00.000Z'
+              employer:
+                summary: Employer profile
+                value:
+                  id: 665f1a2b3c4d5e6f7a8b9c0e
+                  name: Bob Jones
+                  email: bob@acme.com
+                  role: employer
+                  profile:
+                    phone: '+1 555 987 6543'
+                    contactEmail: hr@acme.com
+                    companyName: Acme Corp
+                    companyDescription: A leading provider of innovative solutions.
+                    industry: Technology
+                    companySize: '51-200'
+                    websiteUrl: 'https://acme.com'
+                    companyLocation: Seattle, WA
+                  createdAt: '2024-02-10T08:00:00.000Z'
+      401:
+        description: Missing or invalid token
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  put:
+    summary: Update the authenticated user's profile
+    tags: [Profile]
+    security:
+      - BearerAuth: []
+    description: >
+      Partial update — only include the fields you want to change.
+      Fields that belong to the other role are silently ignored
+      (e.g. `profile.bio` is ignored for employers).
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateProfileRequest'
+          examples:
+            jobseeker:
+              summary: Jobseeker update
+              value:
+                name: Alice Smith
+                profile:
+                  phone: '+1 555 123 4567'
+                  location: Vancouver, BC
+                  bio: Passionate software developer with 5 years of experience.
+            employer:
+              summary: Employer update
+              value:
+                profile:
+                  companyName: Acme Corp
+                  industry: Technology
+                  companySize: '51-200'
+                  websiteUrl: 'https://acme.com'
+    responses:
+      200:
+        description: Profile updated — returns the full updated user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileResponse'
+      400:
+        description: Validation error or no valid fields provided
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/ValidationErrorResponse'
+                - $ref: '#/components/schemas/ErrorResponse'
+            examples:
+              noFields:
+                summary: No valid fields provided
+                value:
+                  message: No valid fields provided
+              validationFailed:
+                summary: Validation failed
+                value:
+                  errors:
+                    - msg: Invalid phone number
+                      path: profile.phone
+                      location: body
+      401:
+        description: Missing or invalid token
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
