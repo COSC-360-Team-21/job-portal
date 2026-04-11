@@ -260,9 +260,13 @@ export const getCompanyBySlug = async (req, res) => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 
-    const allJobs = await Job.find({});
+    // Build a case-insensitive regex from slug parts to filter at the DB level
+    const parts = companySlug.split('-').filter(Boolean);
+    const pattern = parts.map(p => p === 'and' ? '(?:and|&)' : p).join('[^a-z0-9]+');
+    const candidateJobs = await Job.find({ company: new RegExp(pattern, 'i') });
 
-    const matchingJobs = allJobs.filter(
+    // Exact-match on the normalized slug to avoid false positives
+    const matchingJobs = candidateJobs.filter(
       (job) => normalizeToSlug(job.company || '') === companySlug
     );
 
