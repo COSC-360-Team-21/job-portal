@@ -32,3 +32,6 @@ e2e/node_modules/
 
 # Claude 
 .claude/
+
+# Uploaded files
+backend/uploads
