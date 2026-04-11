@@ -57,7 +57,7 @@ const createFormState = (user, profile) => ({
 });
 
 const Dashboard = () => {
-  const { token, user, authLoading, refreshMe } = useAuth();
+  const { token, user, authLoading, persistAuth } = useAuth();
   const navigate = useNavigate();
 
   const [stats, setStats] = useState({
@@ -187,7 +187,7 @@ const Dashboard = () => {
       }
 
       setProfile(data.profile || {});
-      await refreshMe();
+      persistAuth(token, data);
       setEditingProfile(false);
       setConfirmingSave(false);
       setSaveMessage('Profile updated successfully. Your dashboard and header are now refreshed.');
@@ -558,7 +558,7 @@ const Dashboard = () => {
             <div className="db-modal-actions">
               <button
                 className="db-secondary-btn db-secondary-btn--ghost-dark"
-                onClick={() => setEditingProfile(false)}
+                onClick={() => { setEditingProfile(false); setConfirmingSave(false); }}
                 disabled={savingProfile}
               >
                 Cancel
