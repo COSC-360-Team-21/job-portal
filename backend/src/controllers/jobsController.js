@@ -155,7 +155,7 @@ export const getJobStats = async (req, res) => {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    const [jobCounts, jobIds, newApplicationsThisWeek] = await Promise.all([
+    const [jobCounts, jobIds] = await Promise.all([
       Job.aggregate([
         { $match: { postedBy: req.user._id } },
         { $group: { _id: '$status', count: { $sum: 1 } } },
