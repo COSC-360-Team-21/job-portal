@@ -82,6 +82,21 @@ export const getJobs = async (req, res) => {
   }
 };
 
+export const getJobById = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const job = await Job.findById(req.params.id).populate('postedBy', 'name email');
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+    res.json(job);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const getMyJobs = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

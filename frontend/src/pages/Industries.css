@@ -1,0 +1,86 @@
+.ind-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.ind-header {
+  margin-bottom: 40px;
+}
+
+.ind-title {
+  margin: 0 0 8px;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+
+.ind-subtitle {
+  margin: 0;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.ind-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.ind-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.ind-card:hover {
+  border-color: #6366f1;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12);
+  transform: translateY(-2px);
+}
+
+.ind-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.ind-card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ind-card-desc {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.ind-card-cta {
+  margin-top: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6366f1;
+}
+
+@media (max-width: 480px) {
+  .ind-page {
+    padding: 32px 16px 60px;
+  }
+
+  .ind-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

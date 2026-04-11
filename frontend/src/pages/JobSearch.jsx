@@ -17,20 +17,35 @@ const formatDate = (dateStr) => {
 const JobSearch = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+<<<<<<< HEAD
   const initialQ = searchParams.get("q") || "";
+  const initialWorkType = searchParams.get("workType") || "";
 
   const [totalJobs, setTotalJobs] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [inputValue, setInputValue] = useState(initialQ);
-  const [workType, setWorkType] = useState("");
+  const [workType, setWorkType] = useState(initialWorkType);
   const [submitted, setSubmitted] = useState(false);
   const [searching, setSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeWorkType, setActiveWorkType] = useState("");
   const [results, setResults] = useState([]);
   const [totalResults, setTotalResults] = useState(0);
+=======
+  const [allJobs, setAllJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const initialQ = searchParams.get("q") ?? "";
+  const initialWorkType = searchParams.get("workType") ?? "";
+  const [inputValue, setInputValue] = useState(initialQ);
+  const [workType, setWorkType] = useState(initialWorkType);
+  const [submitted, setSubmitted] = useState(initialQ !== "" || initialWorkType !== "");
+  const [searchTerm, setSearchTerm] = useState(initialQ);
+  const [activeWorkType, setActiveWorkType] = useState(initialWorkType);
+>>>>>>> 83456f16ca50745fb7e19e579b40b414a5c2c21a
 
   // Fetch total count on mount + auto-search if query param present
   useEffect(() => {
@@ -47,14 +62,15 @@ const JobSearch = () => {
       }
 
       // Auto-search if query param is present
-      if (initialQ) {
+      if (initialQ || initialWorkType) {
         setSearching(true);
         setSubmitted(true);
         setSearchTerm(initialQ);
-        setInputValue("");
+        setActiveWorkType(initialWorkType);
         try {
           const params = new URLSearchParams();
-          params.set("q", initialQ);
+          if (initialQ) params.set("q", initialQ);
+          if (initialWorkType) params.set("workType", initialWorkType);
           params.set("limit", "100");
           const res = await fetch(`/api/jobs?${params}`);
           if (!res.ok) throw new Error(`Server error: ${res.status}`);
@@ -69,7 +85,7 @@ const JobSearch = () => {
       }
     };
     init();
-  }, [initialQ]);
+  }, [initialQ, initialWorkType]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,7 +93,6 @@ const JobSearch = () => {
     setSearchTerm(term);
     setActiveWorkType(workType);
     setSubmitted(true);
-    setInputValue("");
     setError(null);
     setSearching(true);
 
@@ -256,10 +271,13 @@ const JobSearch = () => {
                     workType={job.workType}
                     salary={job.salaryRange ?? null}
                     postedDate={formatDate(job.postedAt ?? job.createdAt)}
+<<<<<<< HEAD
                     skills={job.skills ?? job.requirements ?? []}
-                    onApply={() =>
-                      navigate(`/apply?job=${encodeURIComponent(job.title)}&jobId=${job._id}`)
-                    }
+                    onApply={() => navigate(`/jobs/${job._id}`)
+=======
+                    skills={job.requirements ?? []}
+                    onApply={() => navigate(`/jobs/${job._id}`)}
+>>>>>>> 83456f16ca50745fb7e19e579b40b414a5c2c21a
                   />
                 ))}
               </div>

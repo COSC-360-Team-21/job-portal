@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body, query, param } from 'express-validator';
-import { createJob, getJobs, getMyJobs, getJobStats, updateJob, deleteJob } from '../controllers/jobsController.js';
+import { createJob, getJobs, getJobById, getMyJobs, getJobStats, updateJob, deleteJob } from '../controllers/jobsController.js';
 import protect, { authorizeRoles } from '../middleware/authMiddleware.js';
 
 const router = Router();
@@ -66,6 +66,12 @@ router.get(
       .withMessage('limit must be an integer between 1 and 100'),
   ],
   getMyJobs
+);
+
+router.get(
+  '/:id',
+  [param('id').isMongoId().withMessage('Invalid job id')],
+  getJobById
 );
 
 router.put(
