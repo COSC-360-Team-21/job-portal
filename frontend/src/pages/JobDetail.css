@@ -136,18 +136,21 @@
 }
 
 .jd-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
   padding-top: 8px;
   border-top: 1px solid #f1f5f9;
 }
 
 .jd-apply-btn {
-  padding: 12px 28px;
-  background: linear-gradient(135deg, #6366f1, #2563eb);
+  padding: 12px 18px;
+  background: #4f46e5;
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: opacity 0.15s, transform 0.15s;
 }
@@ -195,22 +198,6 @@
     flex-direction: column;
   }
 }
-.jd-actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.jd-apply-btn {
-  background: #4f46e5;
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
 .jd-company-btn {
   display: inline-block;
   background: white;
