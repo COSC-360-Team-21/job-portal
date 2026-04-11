@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./LoginForm.css";
@@ -14,19 +14,19 @@ const LoginForm = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      await login(email, password);
-      navigate("/");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
+  try {
+    await login(email, password);
+    navigate("/dashboard");
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className="jobboard-login-section">

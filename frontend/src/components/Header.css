@@ -2,7 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 1px 8px rgba(15, 23, 42, 0.06);
@@ -12,13 +12,12 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 64px;
+  min-height: 72px;
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 24px;
 }
 
-/* Logo */
 .jb-logo {
   display: flex;
   align-items: center;
@@ -45,12 +44,12 @@
   letter-spacing: -0.02em;
 }
 
-/* Nav */
 .jb-nav {
   display: flex;
   align-items: center;
   gap: 4px;
   flex: 1;
+  flex-wrap: wrap;
 }
 
 .jb-nav-link {
@@ -69,12 +68,35 @@
   color: #2563eb;
 }
 
-/* Actions */
 .jb-header-actions {
   margin-left: auto;
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.jb-user-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.jb-user-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.jb-user-role {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.1;
+  margin-top: 2px;
 }
 
 .jb-login-btn {
@@ -93,6 +115,26 @@
 }
 
 .jb-login-btn:hover {
-  opacity: 0.9;
+  opacity: 0.92;
   transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .jb-header-inner {
+    flex-wrap: wrap;
+    padding: 12px 18px;
+  }
+
+  .jb-nav {
+    order: 3;
+    width: 100%;
+  }
+
+  .jb-header-actions {
+    margin-left: 0;
+  }
+
+  .jb-user-chip {
+    align-items: flex-start;
+  }
 }

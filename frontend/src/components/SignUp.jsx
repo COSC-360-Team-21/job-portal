@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -16,19 +16,23 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!agreed) { setError("You must agree to the Terms & Conditions."); return; }
-    setError("");
-    setLoading(true);
-    try {
-      await register(name, email, password, role);
-      navigate("/");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  if (!agreed) {
+    setError("You must agree to the Terms & Conditions.");
+    return;
+  }
+
+  setError("");
+  setLoading(true);
+  try {
+    await register(name, email, password, role);
+    navigate("/dashboard");
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className="jobboard-login-section">

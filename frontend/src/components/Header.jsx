@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./Header.css";
@@ -6,26 +5,53 @@ import "./Header.css";
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, authLoading } = useAuth();
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  const navLinks = [
+  const guestLinks = [
     { label: "Jobs", to: "/jobs" },
-    { label: "Search", to: "/search" },
+    { label: "Industries", to: "/industries" },
     { label: "Register", to: "/register" },
   ];
+
+  const jobSeekerLinks = [
+    { label: "Dashboard", to: "/dashboard" },
+    { label: "Jobs", to: "/jobs" },
+    { label: "Industries", to: "/industries" },
+    { label: "My Applications", to: "/my-applications" },
+  ];
+
+  const employerLinks = [
+    { label: "Dashboard", to: "/dashboard" },
+    { label: "Jobs", to: "/jobs" },
+    { label: "Industries", to: "/industries" },
+  ];
+
+  const navLinks = !user
+    ? guestLinks
+    : user.role === "employer"
+      ? employerLinks
+      : jobSeekerLinks;
 
   return (
     <header className="jb-header">
       <div className="jb-header-inner">
-        {/* Logo */}
-        <Link to="/" className="jb-logo">
+        <Link to={user ? "/dashboard" : "/"} className="jb-logo">
           <span className="jb-logo-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <rect x="2" y="7" width="20" height="14" rx="2" />
               <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
             </svg>
@@ -33,7 +59,6 @@ const Header = () => {
           <span className="jb-logo-text">JobBoard</span>
         </Link>
 
-        {/* Nav */}
         <nav className="jb-nav">
           {navLinks.map(({ label, to }) => (
             <Link
@@ -46,12 +71,21 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* Login / Logout button */}
         <div className="jb-header-actions">
-          {user ? (
-            <button onClick={handleLogout} className="jb-login-btn">
-              Logout
-            </button>
+          {authLoading ? null : user ? (
+            <>
+              <div className="jb-user-chip">
+                <span className="jb-user-name">
+                  {user.name?.split(" ")[0] || "User"}
+                </span>
+                <span className="jb-user-role">
+                  {user.role === "employer" ? "Employer" : "Job Seeker"}
+                </span>
+              </div>
+              <button onClick={handleLogout} className="jb-login-btn">
+                Logout
+              </button>
+            </>
           ) : (
             <Link to="/login" className="jb-login-btn">
               Login
@@ -59,7 +93,6 @@ const Header = () => {
           )}
         </div>
       </div>
-
     </header>
   );
 };
