@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('token'));
   const tokenRef = useRef(token);
+
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('user'));
@@ -13,6 +14,7 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
+
   const [authLoading, setAuthLoading] = useState(true);
 
   const persistAuth = useCallback((nextToken, nextUser) => {
@@ -39,73 +41,83 @@ export function AuthProvider({ children }) {
     persistAuth(null, null);
   }, [persistAuth]);
 
-  const refreshMe = useCallback(async (incomingToken) => {
-    const activeToken = incomingToken ?? tokenRef.current;
-    if (!activeToken) {
-      setAuthLoading(false);
-      return null;
-    }
+  const refreshMe = useCallback(
+    async (incomingToken) => {
+      const activeToken = incomingToken ?? tokenRef.current;
 
-    try {
-      const res = await fetch('/api/auth/me', {
-        headers: {
-          Authorization: `Bearer ${activeToken}`,
-        },
-      });
-
-      if (!res.ok) {
-        logout();
+      if (!activeToken) {
         setAuthLoading(false);
         return null;
       }
 
-      const data = await res.json();
-      persistAuth(activeToken, data);
-      setAuthLoading(false);
-      return data;
-    } catch {
-      logout();
-      setAuthLoading(false);
-      return null;
-    }
-  }, [logout, persistAuth]);
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${activeToken}`,
+          },
+        });
+
+        if (!res.ok) {
+          logout();
+          setAuthLoading(false);
+          return null;
+        }
+
+        const data = await res.json();
+        persistAuth(activeToken, data);
+        setAuthLoading(false);
+        return data;
+      } catch {
+        logout();
+        setAuthLoading(false);
+        return null;
+      }
+    },
+    [logout, persistAuth]
+  );
 
   useEffect(() => {
     refreshMe();
   }, [refreshMe]);
 
-  const login = useCallback(async (email, password) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+  const login = useCallback(
+    async (email, password) => {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Login failed');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Login failed');
 
-    persistAuth(data.token, data.user);
-    setAuthLoading(false);
-    return data.user;
-  }, [persistAuth]);
+      persistAuth(data.token, data.user);
+      setAuthLoading(false);
+      return data.user;
+    },
+    [persistAuth]
+  );
 
-  const register = useCallback(async (name, email, password, role) => {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, role }),
-    });
+  const register = useCallback(
+    async (name, email, password, role) => {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role }),
+      });
 
-    const data = await res.json();
-    if (!res.ok) {
-      const msg = data.errors?.[0]?.msg || data.message || 'Registration failed';
-      throw new Error(msg);
-    }
+      const data = await res.json();
+      if (!res.ok) {
+        const msg = data.errors?.[0]?.msg || data.message || 'Registration failed';
+        throw new Error(msg);
+      }
 
-    persistAuth(data.token, data.user);
-    setAuthLoading(false);
-    return data.user;
-  }, [persistAuth]);
+      persistAuth(data.token, data.user);
+      setAuthLoading(false);
+      return data.user;
+    },
+    [persistAuth]
+  );
 
   return (
     <AuthContext.Provider
@@ -117,6 +129,7 @@ export function AuthProvider({ children }) {
         register,
         logout,
         refreshMe,
+        persistAuth,
       }}
     >
       {children}

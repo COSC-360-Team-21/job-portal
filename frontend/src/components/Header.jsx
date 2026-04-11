@@ -1,6 +1,6 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import "./Header.css";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import './Header.css';
 
 const Header = () => {
   const location = useLocation();
@@ -9,38 +9,34 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate('/');
   };
 
   const guestLinks = [
-    { label: "Jobs", to: "/jobs" },
-    { label: "Industries", to: "/industries" },
-    { label: "Register", to: "/register" },
+    { label: 'Jobs', to: '/jobs' },
+    { label: 'Industries', to: '/industries' },
+    { label: 'Register', to: '/register' },
   ];
 
   const jobSeekerLinks = [
-    { label: "Dashboard", to: "/dashboard" },
-    { label: "Jobs", to: "/jobs" },
-    { label: "Industries", to: "/industries" },
-    { label: "My Applications", to: "/my-applications" },
+    { label: 'Dashboard', to: '/dashboard' },
+    { label: 'Jobs', to: '/jobs' },
+    { label: 'Industries', to: '/industries' },
+    { label: 'My Applications', to: '/my-applications' },
   ];
 
   const employerLinks = [
-    { label: "Dashboard", to: "/dashboard" },
-    { label: "Jobs", to: "/jobs" },
-    { label: "Industries", to: "/industries" },
+    { label: 'Dashboard', to: '/dashboard' },
+    { label: 'Jobs', to: '/jobs' },
+    { label: 'Industries', to: '/industries' },
   ];
 
-  const navLinks = !user
-    ? guestLinks
-    : user.role === "employer"
-      ? employerLinks
-      : jobSeekerLinks;
+  const navLinks = !user ? guestLinks : user.role === 'employer' ? employerLinks : jobSeekerLinks;
 
   return (
     <header className="jb-header">
       <div className="jb-header-inner">
-        <Link to={user ? "/dashboard" : "/"} className="jb-logo">
+        <Link to={user ? '/dashboard' : '/'} className="jb-logo">
           <span className="jb-logo-icon">
             <svg
               width="22"
@@ -64,7 +60,7 @@ const Header = () => {
             <Link
               key={to}
               to={to}
-              className={`jb-nav-link${location.pathname === to ? " jb-nav-link--active" : ""}`}
+              className={`jb-nav-link${location.pathname === to ? ' jb-nav-link--active' : ''}`}
             >
               {label}
             </Link>
@@ -74,14 +70,18 @@ const Header = () => {
         <div className="jb-header-actions">
           {authLoading ? null : user ? (
             <>
-              <div className="jb-user-chip">
-                <span className="jb-user-name">
-                  {user.name?.split(" ")[0] || "User"}
+              <Link to="/dashboard" className="jb-profile-shortcut">
+                <span className="jb-profile-avatar">
+                  {(user.name?.[0] || 'U').toUpperCase()}
                 </span>
-                <span className="jb-user-role">
-                  {user.role === "employer" ? "Employer" : "Job Seeker"}
+                <span className="jb-user-chip">
+                  <span className="jb-user-name">{user.name?.split(' ')[0] || 'User'}</span>
+                  <span className="jb-user-role">
+                    {user.role === 'employer' ? 'Employer account' : 'View profile'}
+                  </span>
                 </span>
-              </div>
+              </Link>
+
               <button onClick={handleLogout} className="jb-login-btn">
                 Logout
               </button>

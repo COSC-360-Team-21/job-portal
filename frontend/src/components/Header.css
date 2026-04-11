@@ -75,14 +75,33 @@
   gap: 12px;
 }
 
+.jb-profile-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fafc;
+  text-decoration: none;
+}
+
+.jb-profile-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.92rem;
+}
+
 .jb-user-chip {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  background: #f8fafc;
 }
 
 .jb-user-name {
@@ -132,9 +151,7 @@
 
   .jb-header-actions {
     margin-left: 0;
-  }
-
-  .jb-user-chip {
-    align-items: flex-start;
+    width: 100%;
+    justify-content: space-between;
   }
 }

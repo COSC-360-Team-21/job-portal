@@ -1,7 +1,16 @@
 import { validationResult } from 'express-validator';
 import User from '../models/User.js';
 
-const JOBSEEKER_ALLOWED = ['name', 'profile.phone', 'profile.location', 'profile.bio'];
+const JOBSEEKER_ALLOWED = [
+  'name',
+  'profile.phone',
+  'profile.location',
+  'profile.bio',
+  'profile.headline',
+  'profile.skills',
+  'profile.preferredIndustries',
+];
+
 const EMPLOYER_ALLOWED = [
   'name',
   'profile.phone',
@@ -16,18 +25,19 @@ const EMPLOYER_ALLOWED = [
 
 function buildUpdate(body, allowedKeys) {
   const update = {};
+
   for (const key of allowedKeys) {
     const [top, sub] = key.split('.');
+
     if (sub) {
       if (body[top] !== undefined && body[top][sub] !== undefined) {
         update[key] = body[top][sub];
       }
-    } else {
-      if (body[top] !== undefined) {
-        update[top] = body[top];
-      }
+    } else if (body[top] !== undefined) {
+      update[top] = body[top];
     }
   }
+
   return update;
 }
 
