@@ -85,7 +85,7 @@ function BriefcaseIcon() {
 }
 
 export default function MyApplications() {
-  const { token, user, authLoading } = useAuth();
+  const { token, authLoading } = useAuth();
 
   const [applications, setApplications] = useState([]);
   const [stats, setStats] = useState({

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -30,6 +31,10 @@ const StatusBadge = ({ status }) => {
   }[status] ?? status;
 
   return <span className={`ed-status-badge ${cls}`}>{label}</span>;
+};
+
+StatusBadge.propTypes = {
+  status: PropTypes.string,
 };
 
 /* ── Post Job modal ── */
@@ -193,6 +198,19 @@ function PostJobModal({ token, user, onClose, onPosted }) {
   );
 }
 
+PostJobModal.propTypes = {
+  token: PropTypes.string,
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    profile: PropTypes.shape({
+      companyName: PropTypes.string,
+      companyLocation: PropTypes.string,
+    }),
+  }),
+  onClose: PropTypes.func.isRequired,
+  onPosted: PropTypes.func.isRequired,
+};
+
 /* ── Main component ── */
 export default function EmployerDashboard() {
   const { token, user } = useAuth();
@@ -222,7 +240,7 @@ export default function EmployerDashboard() {
     fetchDashboard();
   }, [fetchDashboard]);
 
-  const handleJobPosted = (newJob) => {
+  const handleJobPosted = (_newJob) => {
     setShowPostJob(false);
     fetchDashboard();
   };

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -235,6 +236,23 @@ function EditModal({ token, job, onClose, onSaved }) {
   );
 }
 
+EditModal.propTypes = {
+  token: PropTypes.string,
+  job: PropTypes.shape({
+    _id: PropTypes.string,
+    title: PropTypes.string,
+    company: PropTypes.string,
+    location: PropTypes.string,
+    description: PropTypes.string,
+    requirements: PropTypes.arrayOf(PropTypes.string),
+    salaryRange: PropTypes.string,
+    workType: PropTypes.string,
+    status: PropTypes.string,
+  }),
+  onClose: PropTypes.func.isRequired,
+  onSaved: PropTypes.func.isRequired,
+};
+
 /* ── Post New Job Modal ── */
 function PostJobModal({ token, user, onClose, onPosted }) {
   const [form, setForm] = useState({
@@ -399,6 +417,19 @@ function PostJobModal({ token, user, onClose, onPosted }) {
     </div>
   );
 }
+
+PostJobModal.propTypes = {
+  token: PropTypes.string,
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    profile: PropTypes.shape({
+      companyName: PropTypes.string,
+      companyLocation: PropTypes.string,
+    }),
+  }),
+  onClose: PropTypes.func.isRequired,
+  onPosted: PropTypes.func.isRequired,
+};
 
 /* ── Main page ── */
 export default function MyJobPostings() {
