@@ -4,6 +4,7 @@ import {
   upload,
   submitApplication,
   getMyApplications,
+  getApplicationStats,
   getReceivedApplications,
   updateApplicationStatus,
 } from '../controllers/applicationsController.js';
@@ -36,6 +37,8 @@ router.post(
 );
 
 router.get('/mine', protect, authorizeRoles('jobseeker'), getMyApplications);
+
+router.get('/stats', protect, authorizeRoles('jobseeker'), getApplicationStats);
 
 router.get(
   '/received',

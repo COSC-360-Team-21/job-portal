@@ -1,26 +1,73 @@
 components:
   schemas:
-    ErrorResponse:
+    MessageResponse:
       type: object
+      required: [message]
       properties:
         message:
           type: string
+          description: Human-readable result message
+          example: Operation completed successfully
+
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          description: Human-readable error message
           example: Invalid credentials
 
     ValidationErrorResponse:
       type: object
+      required: [errors]
       properties:
         errors:
           type: array
+          description: List of field-level validation failures
           items:
             type: object
+            required: [msg, path, location]
             properties:
               msg:
                 type: string
+                description: Description of the validation failure
                 example: Valid email is required
               path:
                 type: string
+                description: Name of the field that failed validation
                 example: email
               location:
                 type: string
+                description: Part of the request where the field was expected
+                enum: [body, query, params, headers]
                 example: body
+
+    Pagination:
+      type: object
+      required: [page, limit, totalItems, totalPages, hasNextPage, hasPrevPage]
+      properties:
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+          example: 1
+        limit:
+          type: integer
+          description: Number of items per page
+          example: 10
+        totalItems:
+          type: integer
+          description: Total number of matching items across all pages
+          example: 25
+        totalPages:
+          type: integer
+          description: Total number of pages
+          example: 3
+        hasNextPage:
+          type: boolean
+          description: Whether a page after the current one exists
+          example: true
+        hasPrevPage:
+          type: boolean
+          description: Whether a page before the current one exists
+          example: false

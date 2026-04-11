@@ -165,6 +165,25 @@ export const getReceivedApplications = async (req, res) => {
   }
 };
 
+export const getApplicationStats = async (req, res) => {
+  try {
+    const counts = await Application.aggregate([
+      { $match: { applicant: req.user._id } },
+      { $group: { _id: '$applicationStatus', count: { $sum: 1 } } },
+    ]);
+
+    const stats = { total: 0, pending: 0, reviewed: 0, shortlisted: 0, rejected: 0 };
+    for (const { _id, count } of counts) {
+      if (_id in stats) stats[_id] = count;
+      stats.total += count;
+    }
+
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const updateApplicationStatus = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

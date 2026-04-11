@@ -1,0 +1,199 @@
+components:
+  schemas:
+    AdminStats:
+      type: object
+      required: [users, jobs, applications]
+      properties:
+        users:
+          type: object
+          required: [total, byRole, newLast30Days]
+          properties:
+            total:
+              type: integer
+              description: Total number of registered users
+              example: 120
+            byRole:
+              type: object
+              required: [jobseeker, employer, admin]
+              properties:
+                jobseeker:
+                  type: integer
+                  example: 95
+                employer:
+                  type: integer
+                  example: 24
+                admin:
+                  type: integer
+                  example: 1
+            newLast30Days:
+              type: integer
+              description: Users who registered in the last 30 days
+              example: 18
+        jobs:
+          type: object
+          required: [total, byStatus]
+          properties:
+            total:
+              type: integer
+              example: 80
+            byStatus:
+              type: object
+              required: [active, closed]
+              properties:
+                active:
+                  type: integer
+                  example: 65
+                closed:
+                  type: integer
+                  example: 15
+        applications:
+          type: object
+          required: [total, byStatus]
+          properties:
+            total:
+              type: integer
+              example: 340
+            byStatus:
+              type: object
+              required: [pending, reviewed, shortlisted, rejected]
+              properties:
+                pending:
+                  type: integer
+                  example: 180
+                reviewed:
+                  type: integer
+                  example: 90
+                shortlisted:
+                  type: integer
+                  example: 40
+                rejected:
+                  type: integer
+                  example: 30
+
+    AdminUser:
+      type: object
+      required: [_id, name, email, role, createdAt, updatedAt]
+      properties:
+        _id:
+          type: string
+          example: 665f1a2b3c4d5e6f7a8b9c0d
+        name:
+          type: string
+          example: Alice Smith
+        email:
+          type: string
+          format: email
+          example: alice@example.com
+        role:
+          type: string
+          enum: [jobseeker, employer, admin]
+          example: jobseeker
+        profile:
+          type: object
+          description: Role-specific profile fields (optional)
+        createdAt:
+          type: string
+          format: date-time
+          example: '2025-06-01T10:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2025-06-01T10:00:00.000Z'
+
+    PaginatedUsersResponse:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminUser'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    AdminApplication:
+      type: object
+      required: [_id, name, email, phone, job, applicant, applicationStatus, createdAt, updatedAt]
+      properties:
+        _id:
+          type: string
+          example: 665f1a2b3c4d5e6f7a8b9c0d
+        name:
+          type: string
+          example: Bob Jones
+        email:
+          type: string
+          format: email
+          example: bob@example.com
+        phone:
+          type: string
+          example: '+1 555 000 1234'
+        additionalMessage:
+          type: string
+          example: I am very excited about this role.
+        job:
+          type: object
+          required: [_id, title, company]
+          properties:
+            _id:
+              type: string
+              example: 665f1a2b3c4d5e6f7a8b9c0d
+            title:
+              type: string
+              example: Software Engineer
+            company:
+              type: string
+              example: Tech Corp
+        applicant:
+          type: object
+          required: [_id, name, email]
+          properties:
+            _id:
+              type: string
+              example: 665f1a2b3c4d5e6f7a8b9c0d
+            name:
+              type: string
+              example: Bob Jones
+            email:
+              type: string
+              format: email
+              example: bob@example.com
+        applicationStatus:
+          type: string
+          enum: [pending, reviewed, shortlisted, rejected]
+          example: pending
+        resumePath:
+          type: string
+          example: uploads/resume-abc123.pdf
+        coverLetterPath:
+          type: string
+          example: uploads/cover-abc123.pdf
+        createdAt:
+          type: string
+          format: date-time
+          example: '2025-06-15T09:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2025-06-15T09:00:00.000Z'
+
+    PaginatedAdminApplicationsResponse:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminApplication'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    SetJobStatusRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [active, closed]
+          description: The status to set on the job listing
+          example: closed

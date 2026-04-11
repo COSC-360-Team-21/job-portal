@@ -6,19 +6,23 @@ components:
       properties:
         name:
           type: string
+          description: Full name of the user
           example: Alice Smith
         email:
           type: string
           format: email
+          description: Email address used to log in
           example: alice@example.com
         password:
           type: string
           minLength: 6
+          description: Password (minimum 6 characters)
           example: secret123
         role:
           type: string
           enum: [jobseeker, employer]
           default: jobseeker
+          description: Account role; defaults to jobseeker if omitted
           example: jobseeker
 
     LoginRequest:
@@ -28,34 +32,57 @@ components:
         email:
           type: string
           format: email
+          description: Registered email address
           example: alice@example.com
         password:
           type: string
+          description: Account password
           example: secret123
 
     User:
       type: object
+      required: [id, name, email, role]
       properties:
         id:
           type: string
+          description: MongoDB ObjectId of the user
           example: 665f1a2b3c4d5e6f7a8b9c0d
         name:
           type: string
+          description: Full name of the user
           example: Alice Smith
         email:
           type: string
           format: email
+          description: Email address of the user
           example: alice@example.com
         role:
           type: string
           enum: [jobseeker, employer]
+          description: Role that determines what the user can do
           example: jobseeker
 
     AuthResponse:
       type: object
+      required: [token, user]
       properties:
         token:
           type: string
+          description: JWT bearer token to include in the Authorization header for protected endpoints
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         user:
           $ref: '#/components/schemas/User'
+
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          description: The user's existing password
+          example: oldSecret123
+        newPassword:
+          type: string
+          minLength: 6
+          description: The replacement password (minimum 6 characters)
+          example: newSecret456

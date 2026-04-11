@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
-import { register, login, getMe } from '../controllers/authController.js';
+import { register, login, getMe, changePassword } from '../controllers/authController.js';
 import protect from '../middleware/authMiddleware.js';
 
 const router = Router();
+
 router.post(
   '/register',
   [
@@ -13,6 +14,7 @@ router.post(
   ],
   register
 );
+
 router.post(
   '/login',
   [
@@ -21,6 +23,17 @@ router.post(
   ],
   login
 );
+
 router.get('/me', protect, getMe);
+
+router.put(
+  '/change-password',
+  protect,
+  [
+    body('currentPassword').notEmpty().withMessage('Current password is required'),
+    body('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters'),
+  ],
+  changePassword
+);
 
 export default router;

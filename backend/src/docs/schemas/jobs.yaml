@@ -1,37 +1,95 @@
 components:
   schemas:
+    JobStats:
+      type: object
+      required: [totalJobs, activeJobs, closedJobs, totalApplications, newApplicationsThisWeek]
+      properties:
+        totalJobs:
+          type: integer
+          description: Total number of job listings posted by the employer
+          example: 8
+        activeJobs:
+          type: integer
+          description: Number of job listings with status active
+          example: 5
+        closedJobs:
+          type: integer
+          description: Number of job listings with status closed
+          example: 3
+        totalApplications:
+          type: integer
+          description: Total number of applications received across all the employer's job listings
+          example: 47
+        newApplicationsThisWeek:
+          type: integer
+          description: Number of applications received in the last 7 days
+          example: 9
+
     JobListing:
       type: object
+      required: [_id, title, company, location, description, workType, status, postedBy, postedAt, createdAt, updatedAt]
       properties:
         _id:
           type: string
+          description: MongoDB ObjectId of the job listing
           example: 665f1a2b3c4d5e6f7a8b9c0d
         title:
           type: string
+          description: Job title
           example: Software Engineer
         company:
           type: string
+          description: Name of the hiring company
           example: Tech Corp
         location:
           type: string
+          description: Office or work location
           example: New York, NY
         description:
           type: string
+          description: Full job description
           example: We are looking for a skilled Software Engineer...
         requirements:
           type: array
+          description: List of qualifications or experience requirements
           items:
             type: string
-          example: [3+ years of experience with Node.js..., Experience with MongoDB...]
+          example: [3+ years of experience with Node.js, Experience with MongoDB]
+        skills:
+          type: array
+          description: Specific technical or soft skills sought
+          items:
+            type: string
+          example: [Node.js, React, MongoDB]
+        responsibilities:
+          type: array
+          description: Day-to-day duties for the role
+          items:
+            type: string
+          example: [Design and implement REST APIs, Collaborate with frontend team]
         salaryRange:
           type: string
+          description: Indicative salary range for the role
           example: $80,000 - $120,000
         workType:
           type: string
           enum: [Full-time, Part-time, Contract, Internship]
+          description: Employment type
           example: Full-time
+        status:
+          type: string
+          enum: [active, closed]
+          description: Whether the listing is currently accepting applications
+          example: active
+        applicationDeadline:
+          type: string
+          format: date-time
+          description: Last date and time applications are accepted (optional)
+          example: '2025-07-01T00:00:00.000Z'
         postedBy:
           type: object
+          description: Employer who created the listing
+          required: [_id, name, email]
           properties:
             _id:
               type: string
@@ -43,116 +101,121 @@ components:
               type: string
               format: email
               example: alice@example.com
+        postedAt:
+          type: string
+          format: date-time
+          description: When the listing was first published
+          example: '2025-06-01T10:00:00.000Z'
+        createdAt:
+          type: string
+          format: date-time
+          description: Document creation timestamp (set by MongoDB)
+          example: '2025-06-01T10:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Document last-modified timestamp (set by MongoDB)
+          example: '2025-06-01T10:00:00.000Z'
 
     PaginatedJobsResponse:
       type: object
+      required: [data, pagination]
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/JobListing'
         pagination:
-          type: object
-          properties:
-            page:
-              type: integer
-              example: 1
-            limit:
-              type: integer
-              example: 10
-            totalItems:
-              type: integer
-              example: 25
-            totalPages:
-              type: integer
-              example: 3
-            hasNextPage:
-              type: boolean
-              example: true
-            hasPrevPage:
-              type: boolean
-              example: false
+          $ref: '#/components/schemas/Pagination'
 
     MyJobListing:
       type: object
-      description: A job listing as seen by its owner (no populated postedBy field)
+      description: A job listing as seen by its owner
+      required: [_id, title, company, location, description, workType, status, postedAt, createdAt, updatedAt]
       properties:
         _id:
           type: string
+          description: MongoDB ObjectId of the job listing
           example: 665f1a2b3c4d5e6f7a8b9c0d
         title:
           type: string
+          description: Job title
           example: Software Engineer
         company:
           type: string
+          description: Name of the hiring company
           example: Tech Corp
         location:
           type: string
+          description: Office or work location
           example: New York, NY
         description:
           type: string
+          description: Full job description
           example: We are looking for a skilled Software Engineer...
         requirements:
           type: array
+          description: List of qualifications or experience requirements
           items:
             type: string
           example: [3+ years of experience with Node.js, Experience with MongoDB]
+        skills:
+          type: array
+          description: Specific technical or soft skills sought
+          items:
+            type: string
+          example: [Node.js, React, MongoDB]
+        responsibilities:
+          type: array
+          description: Day-to-day duties for the role
+          items:
+            type: string
+          example: [Design and implement REST APIs, Collaborate with frontend team]
         salaryRange:
           type: string
+          description: Indicative salary range for the role
           example: $80,000 - $120,000
         workType:
           type: string
           enum: [Full-time, Part-time, Contract, Internship]
+          description: Employment type
           example: Full-time
         status:
           type: string
           enum: [active, closed]
+          description: Whether the listing is currently accepting applications
           example: active
-        postedAt:
-          type: string
-          format: date-time
-          example: '2025-06-01T10:00:00.000Z'
         applicationDeadline:
           type: string
           format: date-time
+          description: Last date and time applications are accepted (optional)
           example: '2025-07-01T00:00:00.000Z'
+        postedAt:
+          type: string
+          format: date-time
+          description: When the listing was first published
+          example: '2025-06-01T10:00:00.000Z'
         createdAt:
           type: string
           format: date-time
+          description: Document creation timestamp (set by MongoDB)
           example: '2025-06-01T10:00:00.000Z'
         updatedAt:
           type: string
           format: date-time
+          description: Document last-modified timestamp (set by MongoDB)
           example: '2025-06-01T10:00:00.000Z'
 
     PaginatedMyJobsResponse:
       type: object
+      required: [data, pagination]
       properties:
         data:
           type: array
           items:
             $ref: '#/components/schemas/MyJobListing'
         pagination:
-          type: object
-          properties:
-            page:
-              type: integer
-              example: 1
-            limit:
-              type: integer
-              example: 10
-            totalItems:
-              type: integer
-              example: 5
-            totalPages:
-              type: integer
-              example: 1
-            hasNextPage:
-              type: boolean
-              example: false
-            hasPrevPage:
-              type: boolean
-              example: false
+          $ref: '#/components/schemas/Pagination'
 
     CreateJobRequest:
       type: object
@@ -160,25 +223,107 @@ components:
       properties:
         title:
           type: string
+          description: Job title
           example: Software Engineer
         company:
           type: string
+          description: Name of the hiring company
           example: Tech Corp
         location:
           type: string
+          description: Office or work location
           example: New York, NY
         description:
           type: string
+          description: Full job description
           example: We are looking for a skilled Software Engineer...
         requirements:
           type: array
+          description: List of qualifications or experience requirements
           items:
             type: string
-          example: [3+ years of experience with Node.js..., Experience with MongoDB...]
+          example: [3+ years of experience with Node.js, Experience with MongoDB]
+        skills:
+          type: array
+          description: Specific technical or soft skills sought
+          items:
+            type: string
+          example: [Node.js, React, MongoDB]
+        responsibilities:
+          type: array
+          description: Day-to-day duties for the role
+          items:
+            type: string
+          example: [Design and implement REST APIs, Collaborate with frontend team]
         salaryRange:
           type: string
+          description: Indicative salary range for the role
           example: $80,000 - $120,000
         workType:
           type: string
           enum: [Full-time, Part-time, Contract, Internship]
+          description: Employment type
           example: Full-time
+        applicationDeadline:
+          type: string
+          format: date-time
+          description: Last date and time applications are accepted (optional)
+          example: '2025-07-01T00:00:00.000Z'
+
+    UpdateJobRequest:
+      type: object
+      description: All fields are optional; only provided fields will be updated
+      properties:
+        title:
+          type: string
+          description: Job title
+          example: Senior Software Engineer
+        company:
+          type: string
+          description: Name of the hiring company
+          example: Tech Corp
+        location:
+          type: string
+          description: Office or work location
+          example: New York, NY
+        description:
+          type: string
+          description: Full job description
+          example: Updated job description
+        requirements:
+          type: array
+          description: List of qualifications or experience requirements
+          items:
+            type: string
+          example: [5+ years Node.js experience, MongoDB]
+        skills:
+          type: array
+          description: Specific technical or soft skills sought
+          items:
+            type: string
+          example: [Node.js, TypeScript, MongoDB]
+        responsibilities:
+          type: array
+          description: Day-to-day duties for the role
+          items:
+            type: string
+          example: [Lead API design, Mentor junior engineers]
+        salaryRange:
+          type: string
+          description: Indicative salary range for the role
+          example: $100,000 - $140,000
+        workType:
+          type: string
+          enum: [Full-time, Part-time, Contract, Internship]
+          description: Employment type
+          example: Full-time
+        status:
+          type: string
+          enum: [active, closed]
+          description: Set to closed to stop accepting applications
+          example: active
+        applicationDeadline:
+          type: string
+          format: date-time
+          description: Last date and time applications are accepted
+          example: '2025-08-01T00:00:00.000Z'

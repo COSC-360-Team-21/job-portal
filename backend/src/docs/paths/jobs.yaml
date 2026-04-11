@@ -1,9 +1,3 @@
-tags:
-  - name: Jobs – Public
-    description: Browse and search job listings (no auth required)
-  - name: Jobs – Employer
-    description: Create, update, and delete your own job listings
-
 /api/jobs:
   post:
     summary: Create a new job listing
@@ -113,6 +107,39 @@ tags:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
+/api/jobs/stats:
+  get:
+    summary: Get my job statistics
+    description: Employer-only. Returns counts of the authenticated employer's job listings and the applications they have received.
+    tags: [Jobs – Employer]
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: Job and application counts for the employer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobStats'
+      401:
+        description: Unauthorized (missing or invalid token)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not an employer)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
 /api/jobs/mine:
   get:
     summary: Get my job listings
@@ -200,37 +227,13 @@ tags:
         description: MongoDB ObjectId of the job listing
         schema:
           type: string
+          pattern: '^[a-f0-9]{24}$'
     requestBody:
       required: false
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              title:
-                type: string
-                example: Senior Software Engineer
-              company:
-                type: string
-                example: Tech Corp
-              location:
-                type: string
-                example: New York, NY
-              description:
-                type: string
-                example: Updated job description
-              requirements:
-                type: array
-                items:
-                  type: string
-                example: ['5+ years Node.js experience', 'MongoDB']
-              salaryRange:
-                type: string
-                example: $100,000 - $140,000
-              workType:
-                type: string
-                enum: [Full-time, Part-time, Contract, Internship]
-                example: Full-time
+            $ref: '#/components/schemas/UpdateJobRequest'
     responses:
       200:
         description: Job updated successfully
@@ -283,17 +286,14 @@ tags:
         description: MongoDB ObjectId of the job listing
         schema:
           type: string
+          pattern: '^[a-f0-9]{24}$'
     responses:
       200:
         description: Job deleted successfully
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: Job deleted successfully
+              $ref: '#/components/schemas/MessageResponse'
       400:
         description: Validation error (invalid id)
         content:

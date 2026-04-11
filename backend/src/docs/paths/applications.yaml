@@ -1,8 +1,35 @@
-tags:
-  - name: Applications – Jobseeker
-    description: Submit applications and track your own
-  - name: Applications – Employer
-    description: Review applications received on your job listings
+/api/applications/stats:
+  get:
+    summary: Get my application statistics
+    description: Jobseeker-only. Returns a count of the authenticated jobseeker's applications grouped by status.
+    tags: [Applications – Jobseeker]
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: Application counts by status
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationStats'
+      401:
+        description: Unauthorized (missing or invalid token)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not a jobseeker)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
 
 /api/applications/mine:
   get:
@@ -215,8 +242,6 @@ tags:
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
-            example:
-              message: Job not found.
       500:
         description: Server error
         content:
@@ -238,6 +263,7 @@ tags:
         description: MongoDB ObjectId of the application
         schema:
           type: string
+          pattern: '^[a-f0-9]{24}$'
     requestBody:
       required: true
       content:

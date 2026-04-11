@@ -1,5 +1,6 @@
 import { validationResult } from 'express-validator';
 import Job from '../models/Job.js';
+import Application from '../models/Application.js';
 
 export const createJob = async (req, res) => {
   const { title, company, location, description, requirements, salaryRange, workType } = req.body;
@@ -128,6 +129,40 @@ export const getMyJobs = async (req, res) => {
         hasPrevPage: page > 1,
       },
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getJobStats = async (req, res) => {
+  try {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const [jobCounts, jobIds, newApplicationsThisWeek] = await Promise.all([
+      Job.aggregate([
+        { $match: { postedBy: req.user._id } },
+        { $group: { _id: '$status', count: { $sum: 1 } } },
+      ]),
+      Job.find({ postedBy: req.user._id }, '_id').lean(),
+      null,
+    ]);
+
+    const ids = jobIds.map((j) => j._id);
+
+    const [totalApplications, weekApplications] = await Promise.all([
+      ids.length ? Application.countDocuments({ job: { $in: ids } }) : 0,
+      ids.length ? Application.countDocuments({ job: { $in: ids }, createdAt: { $gte: oneWeekAgo } }) : 0,
+    ]);
+
+    const stats = { totalJobs: 0, activeJobs: 0, closedJobs: 0, totalApplications, newApplicationsThisWeek: weekApplications };
+    for (const { _id, count } of jobCounts) {
+      stats.totalJobs += count;
+      if (_id === 'active') stats.activeJobs = count;
+      if (_id === 'closed') stats.closedJobs = count;
+    }
+
+    res.json(stats);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

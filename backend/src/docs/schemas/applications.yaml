@@ -2,50 +2,97 @@ components:
   schemas:
     Application:
       type: object
+      required: [_id, name, email, phone, job, applicant, applicationStatus, resumePath, createdAt, updatedAt]
       properties:
         _id:
           type: string
+          description: MongoDB ObjectId of the application
           example: 665f1a2b3c4d5e6f7a8b9c0d
         name:
           type: string
+          description: Full name of the applicant as submitted on the form
           example: John Doe
         email:
           type: string
           format: email
+          description: Contact email of the applicant as submitted on the form
           example: john.doe@example.com
         phone:
           type: string
+          description: Contact phone number of the applicant
           example: "+1 555 123 4567"
         additionalMessage:
           type: string
+          description: Optional cover note from the applicant
           example: I am particularly interested in this role because…
         job:
           type: string
-          description: MongoDB ObjectId of the job listing
+          description: MongoDB ObjectId of the job listing applied to
           example: 665f1a2b3c4d5e6f7a8b9c0e
         applicant:
-          type: string
-          description: MongoDB ObjectId of the jobseeker who submitted
-          example: 665f1a2b3c4d5e6f7a8b9c0f
+          type: object
+          description: Jobseeker who submitted the application (populated from the User record)
+          required: [_id, name, email]
+          properties:
+            _id:
+              type: string
+              example: 665f1a2b3c4d5e6f7a8b9c0f
+            name:
+              type: string
+              example: John Doe
+            email:
+              type: string
+              format: email
+              example: john.doe@example.com
         applicationStatus:
           type: string
           enum: [pending, reviewed, shortlisted, rejected]
           default: pending
+          description: Current review status set by the employer
           example: pending
         resumePath:
           type: string
+          description: Server-relative path to the uploaded resume file
           example: uploads/1234567890-resume.pdf
         coverLetterPath:
           type: string
+          description: Server-relative path to the uploaded cover letter file (optional)
           example: uploads/1234567890-coverletter.pdf
         createdAt:
           type: string
           format: date-time
+          description: When the application was submitted
           example: 2026-03-27T10:00:00.000Z
         updatedAt:
           type: string
           format: date-time
+          description: When the application record was last modified
           example: 2026-03-27T10:00:00.000Z
+
+    ApplicationStats:
+      type: object
+      required: [total, pending, reviewed, shortlisted, rejected]
+      properties:
+        total:
+          type: integer
+          description: Total number of applications submitted by the jobseeker
+          example: 12
+        pending:
+          type: integer
+          description: Number of applications awaiting review
+          example: 5
+        reviewed:
+          type: integer
+          description: Number of applications marked as reviewed
+          example: 3
+        shortlisted:
+          type: integer
+          description: Number of applications where the jobseeker has been shortlisted
+          example: 2
+        rejected:
+          type: integer
+          description: Number of applications that were rejected
+          example: 2
 
     SubmitApplicationRequest:
       type: object
@@ -53,16 +100,21 @@ components:
       properties:
         name:
           type: string
+          description: Full name of the applicant
           example: John Doe
         email:
           type: string
           format: email
+          description: Contact email address
           example: john.doe@example.com
         phone:
           type: string
+          pattern: '^\+?[\d\s\-().]{7,15}$'
+          description: Contact phone number (7–15 digits, optional leading +)
           example: "+1 555 123 4567"
         additionalMessage:
           type: string
+          description: Optional cover note to accompany the application
           example: I am particularly interested in this role because…
         jobId:
           type: string
@@ -71,9 +123,11 @@ components:
         resume:
           type: string
           format: binary
+          description: Resume file upload (PDF or Word document)
         coverLetter:
           type: string
           format: binary
+          description: Cover letter file upload (optional)
 
     UpdateApplicationStatusRequest:
       type: object
@@ -82,15 +136,19 @@ components:
         status:
           type: string
           enum: [pending, reviewed, shortlisted, rejected]
+          description: New review status to assign to the application
           example: shortlisted
 
     UpdateApplicationStatusResponse:
       type: object
+      required: [message, applicationStatus]
       properties:
         message:
           type: string
+          description: Confirmation message
           example: Status updated.
         applicationStatus:
           type: string
           enum: [pending, reviewed, shortlisted, rejected]
+          description: The updated review status
           example: shortlisted

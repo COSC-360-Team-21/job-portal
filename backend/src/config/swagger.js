@@ -26,6 +26,8 @@ const options = {
       { name: 'Applications – Jobseeker', description: 'Submit applications and track your own' },
       { name: 'Applications – Employer',  description: 'Review applications received on your job listings' },
       { name: 'Admin',                    description: 'Platform-wide management (admin role only)' },
+      { name: 'Profile',                  description: 'View and update your own profile information' },
+      { name: 'Settings',                 description: 'Sensitive account operations: change email and delete account' },
     ],
     components: {
       securitySchemes: {
@@ -41,7 +43,6 @@ const options = {
   apis: [
     join(__dirname, '../app.js'),
     join(__dirname, '../routes/*.js'),
-    join(__dirname, '../routes/*.yaml'),
     join(__dirname, '../docs/**/*.yaml'),
   ],
 };

@@ -1,0 +1,142 @@
+components:
+  schemas:
+    JobseekerProfile:
+      type: object
+      properties:
+        phone:
+          type: string
+          description: Contact phone number
+          example: '+1 555 123 4567'
+        location:
+          type: string
+          description: City or region where the jobseeker is based
+          example: Vancouver, BC
+        bio:
+          type: string
+          maxLength: 500
+          description: Short personal bio (max 500 characters)
+          example: Passionate software developer with 5 years of experience.
+
+    EmployerProfile:
+      type: object
+      properties:
+        phone:
+          type: string
+          description: Contact phone number
+          example: '+1 555 987 6543'
+        contactEmail:
+          type: string
+          format: email
+          description: Public contact email for the company
+          example: hr@acme.com
+        companyName:
+          type: string
+          description: Name of the company
+          example: Acme Corp
+        companyDescription:
+          type: string
+          description: Overview of the company
+          example: A leading provider of innovative solutions.
+        industry:
+          type: string
+          description: Industry the company operates in
+          example: Technology
+        companySize:
+          type: string
+          enum: ['1-10', '11-50', '51-200', '201-500', '501-1000', '1001+']
+          description: Number of employees
+          example: '51-200'
+        websiteUrl:
+          type: string
+          format: uri
+          description: Company website URL
+          example: 'https://acme.com'
+        companyLocation:
+          type: string
+          description: City or region where the company is located
+          example: Seattle, WA
+
+    ProfileResponse:
+      type: object
+      required: [id, name, email, role, profile, createdAt]
+      properties:
+        id:
+          type: string
+          description: MongoDB ObjectId of the user
+          example: 665f1a2b3c4d5e6f7a8b9c0d
+        name:
+          type: string
+          description: Full name of the user
+          example: Alice Smith
+        email:
+          type: string
+          format: email
+          description: Email address of the user
+          example: alice@example.com
+        role:
+          type: string
+          enum: [jobseeker, employer]
+          description: Role of the user
+          example: jobseeker
+        profile:
+          description: Role-specific profile fields (jobseeker or employer)
+          oneOf:
+            - $ref: '#/components/schemas/JobseekerProfile'
+            - $ref: '#/components/schemas/EmployerProfile'
+        createdAt:
+          type: string
+          format: date-time
+          description: When the account was created
+          example: '2024-01-15T10:30:00.000Z'
+
+    UpdateProfileRequest:
+      type: object
+      description: >
+        Partial update — include only the fields to change.
+        Jobseeker fields: `profile.phone`, `profile.location`, `profile.bio`.
+        Employer fields: `profile.phone`, `profile.contactEmail`, `profile.companyName`,
+        `profile.companyDescription`, `profile.industry`, `profile.companySize`,
+        `profile.websiteUrl`, `profile.companyLocation`.
+        Fields not belonging to the authenticated user's role are silently ignored.
+      properties:
+        name:
+          type: string
+          description: Full name of the user
+          example: Alice Smith
+        profile:
+          type: object
+          properties:
+            phone:
+              type: string
+              example: '+1 555 123 4567'
+            location:
+              type: string
+              example: Vancouver, BC
+            bio:
+              type: string
+              maxLength: 500
+              example: Passionate software developer with 5 years of experience.
+            contactEmail:
+              type: string
+              format: email
+              example: hr@acme.com
+            companyName:
+              type: string
+              example: Acme Corp
+            companyDescription:
+              type: string
+              example: A leading provider of innovative solutions.
+            industry:
+              type: string
+              example: Technology
+            companySize:
+              type: string
+              enum: ['1-10', '11-50', '51-200', '201-500', '501-1000', '1001+']
+              example: '51-200'
+            websiteUrl:
+              type: string
+              format: uri
+              example: 'https://acme.com'
+            companyLocation:
+              type: string
+              example: Seattle, WA
