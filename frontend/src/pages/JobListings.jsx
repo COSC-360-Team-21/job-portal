@@ -123,11 +123,7 @@ const JobListings = () => {
                 workType={job.workType}
                 salary={job.salaryRange ?? null}
                 postedDate={formatDate(job.postedAt ?? job.createdAt)}
-<<<<<<< HEAD
                 skills={job.skills ?? job.requirements ?? []}
-=======
-                skills={job.requirements ?? []}
->>>>>>> 83456f16ca50745fb7e19e579b40b414a5c2c21a
                 onApply={() => navigate(`/jobs/${job._id}`)}
               />
             ))
