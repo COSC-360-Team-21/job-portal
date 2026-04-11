@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body, query, param } from 'express-validator';
-import { createJob, getJobs, getJobById, getMyJobs, getJobStats, updateJob, deleteJob } from '../controllers/jobsController.js';
+import { createJob, getJobs, getJobById, getMyJobs, getJobStats, updateJob, deleteJob, getEmployerDashboard } from '../controllers/jobsController.js';
 import protect, { authorizeRoles } from '../middleware/authMiddleware.js';
 import { getCompanyBySlug } from '../controllers/jobsController.js';
 
@@ -26,6 +26,7 @@ router.post(
       .withMessage('Work type is required')
       .isIn(['Full-time', 'Part-time', 'Contract', 'Internship'])
       .withMessage('Invalid work type'),
+    body('industry').optional().isString().trim(),
   ],
   createJob
 );
@@ -52,6 +53,7 @@ router.get(
 );
 
 router.get('/stats', protect, authorizeRoles('employer'), getJobStats);
+router.get('/employer-dashboard', protect, authorizeRoles('employer'), getEmployerDashboard);
 
 router.get(
   '/mine',
