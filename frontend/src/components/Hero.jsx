@@ -5,30 +5,22 @@ import "./Hero.css";
 const Hero = () => {
   const navigate = useNavigate();
   const [heroQuery, setHeroQuery] = useState("");
-<<<<<<< HEAD
   const [heroLocation, setHeroLocation] = useState("");
-=======
->>>>>>> 83456f16ca50745fb7e19e579b40b414a5c2c21a
   const [heroWorkType, setHeroWorkType] = useState("");
 
   const handleHeroSearch = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (heroQuery.trim()) params.set("q", heroQuery.trim());
-<<<<<<< HEAD
     if (heroLocation.trim()) params.set("location", heroLocation.trim());
-=======
->>>>>>> 83456f16ca50745fb7e19e579b40b414a5c2c21a
     if (heroWorkType) params.set("workType", heroWorkType);
     navigate(`/search?${params.toString()}`);
   };
 
-<<<<<<< HEAD
   const handleTrending = (tag) => {
     navigate(`/search?q=${encodeURIComponent(tag)}`);
   };
-=======
->>>>>>> 83456f16ca50745fb7e19e579b40b414a5c2c21a
+
   return (
     <section className="jobboard-hero">
       <div className="jobboard-hero-bg-grid" />
