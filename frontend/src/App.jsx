@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { Routes, Route, Link } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
@@ -25,27 +25,121 @@ function Placeholder({ title }) {
   );
 }
 
-export default function App() {
+function HomeRoute() {
+  const { user, authLoading } = useAuth();
+
+  if (authLoading) return null;
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
-    <AuthProvider>
+    <>
+      <h1
+        style={{
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          padding: 0,
+          margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0,0,0,0)',
+          whiteSpace: 'nowrap',
+          border: 0
+        }}
+      >
+        Job Portal
+      </h1>
+      <Hero />
+    </>
+  );
+}
+
+function AppRoutes() {
+  return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
       <main style={{ flex: 1 }}>
         <Routes>
-          <Route path="/" element={<><h1 style={{position:'absolute',width:'1px',height:'1px',padding:0,margin:'-1px',overflow:'hidden',clip:'rect(0,0,0,0)',whiteSpace:'nowrap',border:0}}>Job Portal</h1><Hero /></>} />
-          <Route path="/login" element={<><Link to="/" style={{display:'inline-block',padding:'1rem 1.5rem',fontWeight:600,color:'#2563eb',textDecoration:'none'}}>← Home</Link><LoginForm /></>} />
-          <Route path="/register" element={<><Link to="/" style={{display:'inline-block',padding:'1rem 1.5rem',fontWeight:600,color:'#2563eb',textDecoration:'none'}}>← Home</Link><SignUp /></>} />
+          <Route path="/" element={<HomeRoute />} />
+          <Route
+            path="/login"
+            element={
+              <>
+                <Link
+                  to="/"
+                  style={{
+                    display: 'inline-block',
+                    padding: '1rem 1.5rem',
+                    fontWeight: 600,
+                    color: '#2563eb',
+                    textDecoration: 'none'
+                  }}
+                >
+                  ← Home
+                </Link>
+                <LoginForm />
+              </>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <>
+                <Link
+                  to="/"
+                  style={{
+                    display: 'inline-block',
+                    padding: '1rem 1.5rem',
+                    fontWeight: 600,
+                    color: '#2563eb',
+                    textDecoration: 'none'
+                  }}
+                >
+                  ← Home
+                </Link>
+                <SignUp />
+              </>
+            }
+          />
           <Route path="/jobs" element={<JobListings />} />
           <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/industries" element={<Industries />} />
           <Route path="/search" element={<JobSearch />} />
-          <Route path="/apply" element={<><Link to="/" style={{display:'inline-block',padding:'1rem 1.5rem',fontWeight:600,color:'#2563eb',textDecoration:'none'}}>← Home</Link><ApplicationForm /></>} />
+          <Route
+            path="/apply"
+            element={
+              <>
+                <Link
+                  to="/"
+                  style={{
+                    display: 'inline-block',
+                    padding: '1rem 1.5rem',
+                    fontWeight: 600,
+                    color: '#2563eb',
+                    textDecoration: 'none'
+                  }}
+                >
+                  ← Home
+                </Link>
+                <ApplicationForm />
+              </>
+            }
+          />
           <Route path="/my-applications" element={<MyApplications />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
     </AuthProvider>
   );
 }

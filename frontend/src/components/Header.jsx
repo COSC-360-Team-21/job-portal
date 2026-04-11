@@ -15,7 +15,6 @@ const Header = () => {
   const guestLinks = [
     { label: "Jobs", to: "/jobs" },
     { label: "Industries", to: "/industries" },
-    { label: "Login", to: "/login" },
     { label: "Register", to: "/register" },
   ];
 
