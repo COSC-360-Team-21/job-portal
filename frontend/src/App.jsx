@@ -13,6 +13,7 @@ import JobSearch from './pages/JobSearch';
 import MyApplications from './pages/MyApplications';
 import JobDetail from './pages/JobDetail';
 import Industries from './pages/Industries';
+import CompanyProfile from './pages/CompanyProfile';
 
 Placeholder.propTypes = { title: PropTypes.string.isRequired };
 function Placeholder({ title }) {
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/search" element={<JobSearch />} />
           <Route path="/apply" element={<><Link to="/" style={{display:'inline-block',padding:'1rem 1.5rem',fontWeight:600,color:'#2563eb',textDecoration:'none'}}>← Home</Link><ApplicationForm /></>} />
           <Route path="/my-applications" element={<MyApplications />} />
+          <Route path="/companies/:companySlug" element={<CompanyProfile />} />
         </Routes>
       </main>
       <Footer />

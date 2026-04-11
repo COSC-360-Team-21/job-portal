@@ -2,8 +2,15 @@ import { Router } from 'express';
 import { body, query, param } from 'express-validator';
 import { createJob, getJobs, getJobById, getMyJobs, getJobStats, updateJob, deleteJob } from '../controllers/jobsController.js';
 import protect, { authorizeRoles } from '../middleware/authMiddleware.js';
+import { getCompanyBySlug } from '../controllers/jobsController.js';
 
 const router = Router();
+
+router.get(
+  '/company/:companySlug',
+  [param('companySlug').isSlug().withMessage('Invalid company slug')],
+  getCompanyBySlug
+);
 
 router.post(
   '/',

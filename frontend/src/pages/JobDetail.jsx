@@ -102,7 +102,18 @@ const JobDetail = () => {
             >
               Apply Now
             </button>
-          </div>
+
+            <Link
+              className="jd-company-btn"
+              to={`/companies/${job.company
+                .toLowerCase()
+                .replace(/&/g, "and")
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "")}`}
+            >
+              View more jobs by {job.company}
+            </Link>
+</div>
         </div>
       </div>
     </div>
