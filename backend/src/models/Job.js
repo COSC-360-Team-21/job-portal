@@ -33,6 +33,10 @@ const jobSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    industry: {
+      type: String,
+      trim: true,
+    },
     salaryRange: {
       type: String,
       trim: true,
