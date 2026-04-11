@@ -21,6 +21,7 @@ const EMPLOYER_ALLOWED = [
   'profile.companySize',
   'profile.websiteUrl',
   'profile.companyLocation',
+  'profile.companyLogoUrl',
 ];
 
 function buildUpdate(body, allowedKeys) {
