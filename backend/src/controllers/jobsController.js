@@ -4,7 +4,7 @@ import Application from '../models/Application.js';
 
 
 export const createJob = async (req, res) => {
-  const { title, company, location, description, requirements, salaryRange, workType } = req.body;
+  const { title, company, location, description, requirements, salaryRange, workType, industry } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -18,6 +18,7 @@ export const createJob = async (req, res) => {
       requirements,
       salaryRange,
       workType,
+      industry,
       postedBy: req.user._id,
     });
     res.status(201).json(job);
@@ -128,14 +129,42 @@ export const getMyJobs = async (req, res) => {
     }
 
     const [jobs, totalItems] = await Promise.all([
-      Job.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Job.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
       Job.countDocuments(filter),
     ]);
+
+    // Per-job applicant + pending counts
+    const jobIds = jobs.map((j) => j._id);
+    const appCounts = jobIds.length
+      ? await Application.aggregate([
+          { $match: { job: { $in: jobIds } } },
+          {
+            $group: {
+              _id: '$job',
+              total: { $sum: 1 },
+              pending: {
+                $sum: { $cond: [{ $eq: ['$applicationStatus', 'pending'] }, 1, 0] },
+              },
+            },
+          },
+        ])
+      : [];
+
+    const countMap = {};
+    for (const item of appCounts) {
+      countMap[item._id.toString()] = { total: item.total, pending: item.pending };
+    }
+
+    const jobsWithCounts = jobs.map((j) => ({
+      ...j,
+      applicationCount: countMap[j._id.toString()]?.total ?? 0,
+      pendingCount: countMap[j._id.toString()]?.pending ?? 0,
+    }));
 
     const totalPages = Math.max(Math.ceil(totalItems / limit), 1);
 
     res.json({
-      data: jobs,
+      data: jobsWithCounts,
       pagination: {
         page,
         limit,
@@ -303,5 +332,84 @@ export const getCompanyBySlug = async (req, res) => {
     return res.status(500).json({
       message: 'Server error while fetching company profile',
     });
+  }
+};
+
+export const getEmployerDashboard = async (req, res) => {
+  try {
+    const employerId = req.user._id;
+
+    // All employer jobs sorted newest first
+    const allJobs = await Job.find({ postedBy: employerId }).sort({ createdAt: -1 }).lean();
+    const jobIds = allJobs.map((j) => j._id);
+
+    const [appCountsPerJob, appStatusCounts, recentApplications] = await Promise.all([
+      // Per-job: total applicants + pending count
+      jobIds.length
+        ? Application.aggregate([
+            { $match: { job: { $in: jobIds } } },
+            {
+              $group: {
+                _id: '$job',
+                total: { $sum: 1 },
+                pending: {
+                  $sum: { $cond: [{ $eq: ['$applicationStatus', 'pending'] }, 1, 0] },
+                },
+              },
+            },
+          ])
+        : [],
+
+      // Overall status breakdown
+      jobIds.length
+        ? Application.aggregate([
+            { $match: { job: { $in: jobIds } } },
+            { $group: { _id: '$applicationStatus', count: { $sum: 1 } } },
+          ])
+        : [],
+
+      // 3 most recent applications with applicant name + job title
+      jobIds.length
+        ? Application.find({ job: { $in: jobIds } })
+            .sort({ createdAt: -1 })
+            .limit(3)
+            .populate('job', 'title')
+            .lean()
+        : [],
+    ]);
+
+    // Build per-job lookup map
+    const countLookup = {};
+    for (const item of appCountsPerJob) {
+      countLookup[item._id.toString()] = { total: item.total, pending: item.pending };
+    }
+
+    // Merge counts into each job
+    const jobsWithCounts = allJobs.map((job) => ({
+      ...job,
+      applicationCount: countLookup[job._id.toString()]?.total || 0,
+      pendingCount: countLookup[job._id.toString()]?.pending || 0,
+    }));
+
+    // Build overall stats
+    const statusLookup = {};
+    for (const item of appStatusCounts) {
+      statusLookup[item._id] = item.count;
+    }
+    const totalApplications = appCountsPerJob.reduce((sum, item) => sum + item.total, 0);
+
+    return res.json({
+      stats: {
+        totalJobs: allJobs.length,
+        activeJobs: allJobs.filter((j) => j.status === 'active').length,
+        totalApplications,
+        pendingApplications: statusLookup.pending || 0,
+        shortlistedApplications: statusLookup.shortlisted || 0,
+      },
+      jobs: jobsWithCounts,
+      recentApplications,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
