@@ -69,6 +69,31 @@ components:
           description: When the application record was last modified
           example: 2026-03-27T10:00:00.000Z
 
+    ApplicationStats:
+      type: object
+      required: [total, pending, reviewed, shortlisted, rejected]
+      properties:
+        total:
+          type: integer
+          description: Total number of applications submitted by the jobseeker
+          example: 12
+        pending:
+          type: integer
+          description: Number of applications awaiting review
+          example: 5
+        reviewed:
+          type: integer
+          description: Number of applications marked as reviewed
+          example: 3
+        shortlisted:
+          type: integer
+          description: Number of applications where the jobseeker has been shortlisted
+          example: 2
+        rejected:
+          type: integer
+          description: Number of applications that were rejected
+          example: 2
+
     SubmitApplicationRequest:
       type: object
       required: [name, email, phone, jobId, resume]

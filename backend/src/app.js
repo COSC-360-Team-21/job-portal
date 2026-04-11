@@ -5,6 +5,9 @@ import swaggerSpec from './config/swagger.js';
 import authRoutes from './routes/authRoutes.js';
 import jobsRoutes from './routes/jobsRoutes.js';
 import applicationsRoutes from './routes/applicationsRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 const app = express();
 
@@ -43,5 +46,8 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobsRoutes);
 app.use('/api/applications', applicationsRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/admin', adminRoutes);
 
 export default app;

@@ -107,6 +107,39 @@
             schema:
               $ref: '#/components/schemas/ErrorResponse'
 
+/api/jobs/stats:
+  get:
+    summary: Get my job statistics
+    description: Employer-only. Returns counts of the authenticated employer's job listings and the applications they have received.
+    tags: [Jobs – Employer]
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: Job and application counts for the employer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobStats'
+      401:
+        description: Unauthorized (missing or invalid token)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not an employer)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
 /api/jobs/mine:
   get:
     summary: Get my job listings

@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import app from '../app.js';
+import Application from '../models/Application.js';
 import Job from '../models/Job.js';
 import User from '../models/User.js';
 
@@ -184,6 +185,108 @@ describe('PUT /api/jobs/:id', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.errors).toBeDefined();
+  });
+});
+
+describe('GET /api/jobs/stats', () => {
+  it('returns zero counts when employer has no jobs', async () => {
+    const { token } = await registerUser('employer', 'stats-empty');
+
+    const res = await request(app)
+      .get('/api/jobs/stats')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      totalJobs: 0,
+      activeJobs: 0,
+      closedJobs: 0,
+      totalApplications: 0,
+      newApplicationsThisWeek: 0,
+    });
+  });
+
+  it('returns correct job counts by status', async () => {
+    const { token, userId } = await registerUser('employer', 'stats-jobs');
+
+    await Job.insertMany([
+      { ...buildJobPayload(), postedBy: userId, status: 'active' },
+      { ...buildJobPayload(), postedBy: userId, status: 'active' },
+      { ...buildJobPayload(), postedBy: userId, status: 'closed' },
+    ]);
+
+    const res = await request(app)
+      .get('/api/jobs/stats')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.totalJobs).toBe(3);
+    expect(res.body.activeJobs).toBe(2);
+    expect(res.body.closedJobs).toBe(1);
+  });
+
+  it('returns correct total application count', async () => {
+    const { token, userId } = await registerUser('employer', 'stats-apps');
+    const applicant = await User.create({
+      name: faker.person.fullName(),
+      email: `applicant-stats-${faker.string.uuid()}@example.com`,
+      password: 'password123',
+      role: 'jobseeker',
+    });
+
+    const job = await Job.create({ ...buildJobPayload({ workType: 'Full-time' }), postedBy: userId });
+
+    await Application.insertMany(
+      Array.from({ length: 4 }, () => ({
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        phone: '555-000-0000',
+        job: job._id,
+        applicant: applicant._id,
+        resumePath: 'uploads/test.pdf',
+      }))
+    );
+
+    const res = await request(app)
+      .get('/api/jobs/stats')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.totalApplications).toBe(4);
+  });
+
+  it('only counts jobs and applications belonging to the authenticated employer', async () => {
+    const { token, userId } = await registerUser('employer', 'stats-iso');
+    const { userId: otherId } = await registerUser('employer', 'stats-iso-other');
+
+    await Job.create({ ...buildJobPayload({ workType: 'Full-time' }), postedBy: userId });
+    await Job.insertMany([
+      { ...buildJobPayload({ workType: 'Full-time' }), postedBy: otherId },
+      { ...buildJobPayload({ workType: 'Full-time' }), postedBy: otherId },
+    ]);
+
+    const res = await request(app)
+      .get('/api/jobs/stats')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.totalJobs).toBe(1);
+  });
+
+  it('returns 401 when no token is provided', async () => {
+    const res = await request(app).get('/api/jobs/stats');
+
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 403 when requester is a jobseeker', async () => {
+    const { token } = await registerUser('jobseeker', 'stats-jobseeker');
+
+    const res = await request(app)
+      .get('/api/jobs/stats')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(403);
   });
 });
 

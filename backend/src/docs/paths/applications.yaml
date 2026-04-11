@@ -1,3 +1,36 @@
+/api/applications/stats:
+  get:
+    summary: Get my application statistics
+    description: Jobseeker-only. Returns a count of the authenticated jobseeker's applications grouped by status.
+    tags: [Applications – Jobseeker]
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: Application counts by status
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationStats'
+      401:
+        description: Unauthorized (missing or invalid token)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (not a jobseeker)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
 /api/applications/mine:
   get:
     summary: Get my applications

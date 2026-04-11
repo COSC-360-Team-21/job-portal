@@ -1,0 +1,410 @@
+/api/admin/stats:
+  get:
+    summary: Get platform statistics
+    description: Returns counts of users (by role), jobs (by status), applications (by status), and new signups in the last 30 days.
+    tags: [Admin]
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: Platform statistics
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminStats'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (admin role required)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/api/admin/users:
+  get:
+    summary: List all users or get a user by ID
+    description: >
+      When `id` is omitted, returns a paginated list of all users with optional search and role filter.
+      When `id` is provided as a path segment (`/api/admin/users/{id}`), returns a single user.
+    tags: [Admin]
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: query
+        name: q
+        required: false
+        description: Search by name or email (case-insensitive)
+        schema:
+          type: string
+        example: alice
+      - in: query
+        name: role
+        required: false
+        description: Filter by role
+        schema:
+          type: string
+          enum: [jobseeker, employer, admin]
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+    responses:
+      200:
+        description: Paginated list of users, or a single user when called as `/api/admin/users/{id}`
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PaginatedUsersResponse'
+                - $ref: '#/components/schemas/AdminUser'
+      400:
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationErrorResponse'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (admin role required)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      404:
+        description: User not found (only when id is provided)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/api/admin/users/{id}:
+  delete:
+    summary: Delete a user
+    description: Removes the user and cascades — deletes their jobs and applications (employer) or their applications (jobseeker).
+    tags: [Admin]
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          pattern: '^[a-f0-9]{24}$'
+    responses:
+      200:
+        description: User deleted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageResponse'
+      400:
+        description: Invalid ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationErrorResponse'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (admin role required)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      404:
+        description: User not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/api/admin/jobs:
+  get:
+    summary: List all jobs
+    description: Returns a paginated list of all job listings across all employers.
+    tags: [Admin]
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: query
+        name: q
+        required: false
+        description: Search by title or company (case-insensitive)
+        schema:
+          type: string
+        example: engineer
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum: [active, closed]
+      - in: query
+        name: workType
+        required: false
+        schema:
+          type: string
+          enum: [Full-time, Part-time, Contract, Internship]
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+    responses:
+      200:
+        description: Paginated list of jobs
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginatedJobsResponse'
+      400:
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationErrorResponse'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (admin role required)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/api/admin/jobs/{id}:
+  delete:
+    summary: Delete any job listing
+    description: Removes the job listing and all associated applications.
+    tags: [Admin]
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          pattern: '^[a-f0-9]{24}$'
+    responses:
+      200:
+        description: Job deleted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageResponse'
+      400:
+        description: Invalid ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationErrorResponse'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (admin role required)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      404:
+        description: Job not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/api/admin/jobs/{id}/status:
+  patch:
+    summary: Set job status
+    description: Force a job listing to active or closed regardless of the employer's own actions.
+    tags: [Admin]
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          pattern: '^[a-f0-9]{24}$'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SetJobStatusRequest'
+    responses:
+      200:
+        description: Updated job listing
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobListing'
+      400:
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/ValidationErrorResponse'
+                - $ref: '#/components/schemas/ErrorResponse'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (admin role required)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      404:
+        description: Job not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/api/admin/applications:
+  get:
+    summary: List all applications
+    description: Returns a paginated list of all applications across the platform.
+    tags: [Admin]
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum: [pending, reviewed, shortlisted, rejected]
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+    responses:
+      200:
+        description: Paginated list of applications
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginatedAdminApplicationsResponse'
+      400:
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationErrorResponse'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      403:
+        description: Forbidden (admin role required)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      500:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'

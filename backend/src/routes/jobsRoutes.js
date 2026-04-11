@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body, query, param } from 'express-validator';
-import { createJob, getJobs, getMyJobs, updateJob, deleteJob } from '../controllers/jobsController.js';
+import { createJob, getJobs, getMyJobs, getJobStats, updateJob, deleteJob } from '../controllers/jobsController.js';
 import protect, { authorizeRoles } from '../middleware/authMiddleware.js';
 
 const router = Router();
@@ -43,6 +43,8 @@ router.get(
   ],
   getJobs
 );
+
+router.get('/stats', protect, authorizeRoles('employer'), getJobStats);
 
 router.get(
   '/mine',

@@ -1,5 +1,30 @@
 components:
   schemas:
+    JobStats:
+      type: object
+      required: [totalJobs, activeJobs, closedJobs, totalApplications, newApplicationsThisWeek]
+      properties:
+        totalJobs:
+          type: integer
+          description: Total number of job listings posted by the employer
+          example: 8
+        activeJobs:
+          type: integer
+          description: Number of job listings with status active
+          example: 5
+        closedJobs:
+          type: integer
+          description: Number of job listings with status closed
+          example: 3
+        totalApplications:
+          type: integer
+          description: Total number of applications received across all the employer's job listings
+          example: 47
+        newApplicationsThisWeek:
+          type: integer
+          description: Number of applications received in the last 7 days
+          example: 9
+
     JobListing:
       type: object
       required: [_id, title, company, location, description, workType, status, postedBy, postedAt, createdAt, updatedAt]
