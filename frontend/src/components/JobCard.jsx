@@ -24,22 +24,22 @@ const JobCard = ({
 
   return (
     <article className="jc-card">
-      <div className="jc-top">
-        <div className="jc-company-logo" aria-hidden="true">
-          {company.charAt(0).toUpperCase()}
-        </div>
+      <Link to={`/jobs/${id}`} className="jc-top-link">
+        <div className="jc-top">
+          <div className="jc-company-logo" aria-hidden="true">
+            {company.charAt(0).toUpperCase()}
+          </div>
 
-        <div className="jc-meta">
-          <h3 className="jc-title">
-            <Link to={`/jobs/${id}`} className="jc-title-link">{title}</Link>
-          </h3>
-          <p className="jc-company">{company}</p>
-          <p className="jc-location">{location}</p>
-          <div className="jc-badges">
-            <span className="jc-badge jc-badge-type">{workType}</span>
+          <div className="jc-meta">
+            <h3 className="jc-title">{title}</h3>
+            <p className="jc-company">{company}</p>
+            <p className="jc-location">{location}</p>
+            <div className="jc-badges">
+              <span className="jc-badge jc-badge-type">{workType}</span>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
 
       {skills.length > 0 && (
         <div className="jc-skills">
@@ -67,7 +67,7 @@ const JobCard = ({
             {saved ? "Saved" : "Save"}
           </button>
           <button className="jc-btn-apply" onClick={onApply}>
-            Apply Now
+            View Details
           </button>
         </div>
       </div>
