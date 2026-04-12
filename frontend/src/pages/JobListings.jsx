@@ -117,6 +117,7 @@ const JobListings = () => {
             results.map((job) => (
               <JobCard
                 key={job._id}
+                id={job._id}
                 title={job.title}
                 company={job.company}
                 location={job.location}
