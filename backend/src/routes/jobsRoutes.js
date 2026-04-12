@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import { body, query, param } from 'express-validator';
-import { createJob, getJobs, getJobById, getMyJobs, getJobStats, updateJob, deleteJob, getEmployerDashboard } from '../controllers/jobsController.js';
+import { createJob, getJobs, getJobById, getMyJobs, getJobStats, updateJob, deleteJob, getEmployerDashboard, getTrending } from '../controllers/jobsController.js';
 import protect, { authorizeRoles } from '../middleware/authMiddleware.js';
 import { getCompanyBySlug } from '../controllers/jobsController.js';
 
 const router = Router();
+
+router.get('/trending', getTrending);
 
 router.get(
   '/company/:companySlug',
