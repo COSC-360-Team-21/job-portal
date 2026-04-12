@@ -18,7 +18,7 @@ const CommentHistory = () => {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Failed to load comments');
-        setComments(data.comments || []);
+        setComments(data.data || []);
       } catch (err) {
         setError(err.message);
       } finally {
