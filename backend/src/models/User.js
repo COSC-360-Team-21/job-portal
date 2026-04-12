@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema(
       enum: ['jobseeker', 'employer', 'admin'],
       default: 'jobseeker',
     },
+    profileImage: {
+      type: String,
+      default: '',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     profile: {
       phone: { type: String, trim: true },
       location: { type: String, trim: true },
@@ -48,6 +56,11 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userSchema.index({ email: 1 });
+userSchema.index({ role: 1 });
+userSchema.index({ createdAt: -1 });
+userSchema.index({ isActive: 1 });
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
