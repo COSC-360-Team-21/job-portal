@@ -1,0 +1,93 @@
+.comment-history-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 24px 56px;
+}
+
+.comment-history-page h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+  letter-spacing: -0.03em;
+}
+
+.comment-history-page > p {
+  color: #64748b;
+  margin: 0 0 28px;
+}
+
+.ch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ch-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  transition: box-shadow 0.2s;
+}
+
+.ch-card:hover {
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+.ch-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.ch-card-header a {
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.ch-card-header a:hover {
+  text-decoration: underline;
+}
+
+.ch-card-date {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.ch-card-body {
+  color: #334155;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ch-reply-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #ede9fe;
+  color: #7c3aed;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.ch-loading,
+.ch-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 40px;
+}
+
+.ch-error {
+  color: #dc2626;
+  background: #fef2f2;
+  padding: 14px;
+  border-radius: 12px;
+  text-align: center;
+}
