@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './JobManage.css';
-import { API } from '../api.js';
+
+const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 
 const STATUSES = ['pending', 'reviewed', 'shortlisted', 'rejected'];
 const WORK_TYPES = ['Full-time', 'Part-time', 'Contract', 'Internship'];

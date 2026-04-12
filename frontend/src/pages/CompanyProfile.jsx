@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import './CompanyProfile.css';
-import { API } from '../api.js';
 
 export default function CompanyProfile() {
   const { companySlug } = useParams();
@@ -15,7 +14,7 @@ export default function CompanyProfile() {
         setLoading(true);
         setError('');
 
-        const res = await fetch(`${API}/api/jobs/company/${companySlug}`);
+        const res = await fetch(`/api/jobs/company/${companySlug}`);
 
         if (!res.ok) {
           throw new Error('Failed to load company profile');

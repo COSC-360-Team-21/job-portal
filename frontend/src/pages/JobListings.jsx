@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import JobCard from "../components/JobCard";
 import "./JobListings.css";
-import { API } from '../api.js';
 
 const WORK_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
@@ -32,7 +31,7 @@ const JobListings = () => {
     const fetchJobs = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${API}/api/jobs?limit=100`);
+        const res = await fetch("/api/jobs?limit=100");
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         const json = await res.json();
         setAllJobs(json.data ?? []);

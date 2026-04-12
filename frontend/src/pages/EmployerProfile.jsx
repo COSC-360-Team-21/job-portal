@@ -2,7 +2,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './EmployerProfile.css';
-import { API } from '../api.js';
+
+const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 
 export default function EmployerProfile() {
   const { token, user, persistAuth } = useAuth();
