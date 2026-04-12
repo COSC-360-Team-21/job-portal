@@ -15,6 +15,11 @@ import JobDetail from './pages/JobDetail';
 import Industries from './pages/Industries';
 import Dashboard from './pages/Dashboard';
 import CompanyProfile from './pages/CompanyProfile';
+import MyJobPostings from './pages/MyJobPostings';
+import EmployerProfile from './pages/EmployerProfile';
+import CreateJobPosting from './pages/CreateJobPosting';
+import ReceivedApplications from './pages/ReceivedApplications';
+import JobManage from './pages/JobManage';
 
 function GuestOnly({ children }) {
   const { user, authLoading } = useAuth();
@@ -135,6 +140,11 @@ function AppRoutes() {
             }
           />
           <Route path="/my-applications" element={<RequireAuth><MyApplications /></RequireAuth>} />
+          <Route path="/my-jobs" element={<RequireAuth><MyJobPostings /></RequireAuth>} />
+          <Route path="/my-jobs/:id" element={<RequireAuth><JobManage /></RequireAuth>} />
+          <Route path="/create-job" element={<RequireAuth><CreateJobPosting /></RequireAuth>} />
+          <Route path="/applications/received" element={<RequireAuth><ReceivedApplications /></RequireAuth>} />
+          <Route path="/profile" element={<RequireAuth><EmployerProfile /></RequireAuth>} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
           <Route path="/companies/:companySlug" element={<CompanyProfile />} />
         </Routes>

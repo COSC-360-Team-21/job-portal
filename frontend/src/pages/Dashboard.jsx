@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import EmployerDashboard from './EmployerDashboard';
 import './Dashboard.css';
 
 const formatDate = (dateStr) => {
@@ -135,20 +136,7 @@ const Dashboard = () => {
   }
 
   if (!authLoading && user?.role === 'employer') {
-    return (
-      <section className="db-page">
-        <div className="db-empty-state">
-          <h1>Employer dashboard coming soon</h1>
-          <p>
-            You are logged in as an employer. For now, you can still browse jobs
-            and use the rest of your existing app.
-          </p>
-          <Link className="db-primary-btn" to="/jobs">
-            Browse Jobs
-          </Link>
-        </div>
-      </section>
-    );
+    return <EmployerDashboard />;
   }
 
   const handleChange = (e) => {

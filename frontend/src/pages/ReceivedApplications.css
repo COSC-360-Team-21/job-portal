@@ -1,0 +1,303 @@
+/* ── Page shell ── */
+.ra-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 1.5rem 1rem 4rem;
+}
+
+.ra-back {
+  display: inline-block;
+  color: #374151;
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+.ra-back:hover { color: #111; }
+
+.ra-header { margin-bottom: 1.5rem; }
+
+.ra-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 0.25rem;
+}
+
+.ra-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ── Filters ── */
+.ra-filters {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ra-filter-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.ra-filter-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.ra-search-wrap {
+  position: relative;
+}
+
+.ra-search-icon {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.ra-search {
+  width: 100%;
+  padding: 0.55rem 0.75rem 0.55rem 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  color: #111;
+  background: #f9fafb;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.ra-search:focus { outline: none; border-color: #9ca3af; background: #fff; }
+
+.ra-select {
+  padding: 0.55rem 2rem 0.55rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  color: #111;
+  background: #f9fafb;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1.1em;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ra-select:focus { outline: none; border-color: #9ca3af; background-color: #fff; }
+
+/* ── Results box ── */
+.ra-results-box {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.ra-count {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0 0 1rem;
+}
+
+.ra-empty {
+  text-align: center;
+  color: #9ca3af;
+  padding: 2rem 0;
+  font-size: 0.9rem;
+}
+
+/* ── Applicant cards ── */
+.ra-list { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.ra-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  background: #fff;
+}
+
+.ra-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.ra-card-left { display: flex; gap: 0.85rem; align-items: flex-start; }
+
+.ra-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ra-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ra-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.ra-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  text-transform: lowercase;
+}
+.ra-badge--pending    { background: #fef9c3; color: #854d0e; }
+.ra-badge--reviewed   { background: #dbeafe; color: #1e40af; }
+.ra-badge--shortlisted { background: #dcfce7; color: #166534; }
+.ra-badge--rejected   { background: #fee2e2; color: #991b1b; }
+
+.ra-meta {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0.1rem 0 0;
+}
+
+.ra-card-actions { flex-shrink: 0; }
+
+.ra-btn-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.ra-btn-view:hover { background: #f3f4f6; }
+
+/* ── Job info card ── */
+.ra-job-card {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.ra-job-applied-for {
+  font-size: 0.7rem;
+  color: #3b82f6;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.25rem;
+}
+
+.ra-job-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin: 0 0 0.5rem;
+}
+
+.ra-job-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 1rem;
+  font-size: 0.8rem;
+  color: #374151;
+}
+
+/* ── Cover letter ── */
+.ra-cover {
+  font-size: 0.825rem;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.ra-cover-label { font-weight: 600; margin-right: 0.35rem; }
+.ra-cover-text  { color: #6b7280; }
+
+/* ── Status changer ── */
+.ra-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 0.65rem;
+  margin-top: 0.5rem;
+}
+
+.ra-status-label { font-size: 0.78rem; color: #6b7280; }
+
+.ra-status-select {
+  padding: 0.3rem 1.8rem 0.3rem 0.55rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: #111;
+  background: #f9fafb;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.45rem center;
+  background-size: 1em;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ── Pagination ── */
+.ra-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.ra-page-btn {
+  padding: 0.45rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: #374151;
+}
+.ra-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ra-page-btn:not(:disabled):hover { background: #f3f4f6; }
+
+.ra-page-info { font-size: 0.875rem; color: #6b7280; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .ra-filters { grid-template-columns: 1fr; }
+  .ra-card-top { flex-direction: column; gap: 0.75rem; }
+  .ra-job-meta-grid { grid-template-columns: 1fr; }
+}

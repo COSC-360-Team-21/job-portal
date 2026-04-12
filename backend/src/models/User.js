@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema(
       },
       websiteUrl: { type: String, trim: true },
       companyLocation: { type: String, trim: true },
+      companyLogoUrl: { type: String, trim: true },
     },
   },
   { timestamps: true }

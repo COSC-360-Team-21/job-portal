@@ -48,6 +48,7 @@ const updateValidations = [
 
   body('profile.websiteUrl').optional().isURL().withMessage('Invalid website URL'),
   body('profile.companyLocation').optional().isString().trim(),
+  body('profile.companyLogoUrl').optional().isURL().withMessage('Invalid logo URL'),
 ];
 
 router.get('/', protect, getProfile);

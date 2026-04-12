@@ -1,0 +1,392 @@
+/* ── Page shell ── */
+.jm-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 1.5rem 1rem 4rem;
+}
+
+/* ── Top bar ── */
+.jm-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.jm-back {
+  color: #374151;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+.jm-back:hover { color: #111; }
+
+.jm-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.jm-confirm-text {
+  font-size: 0.8rem;
+  color: #b91c1c;
+}
+
+/* ── Tabs ── */
+.jm-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 3px;
+  width: fit-content;
+}
+
+.jm-tab {
+  padding: 0.45rem 1.1rem;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+  font-weight: 500;
+}
+.jm-tab:hover { color: #111; }
+.jm-tab--active {
+  background: #fff;
+  color: #111;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ── Card ── */
+.jm-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.5rem 1.75rem 2rem;
+  max-width: 900px;
+}
+
+/* ── Job details view ── */
+.jm-job-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 0.5rem;
+}
+
+.jm-job-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.jm-status-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+.jm-status-pill--active { background: #dcfce7; color: #166534; }
+.jm-status-pill--closed { background: #f3f4f6; color: #6b7280; }
+
+.jm-detail-row {
+  font-size: 0.875rem;
+  color: #374151;
+  margin: 0.2rem 0;
+}
+.jm-detail-key { font-weight: 600; }
+
+.jm-section { margin-top: 1.25rem; }
+
+.jm-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 0.6rem;
+}
+
+.jm-description {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.jm-req-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.8;
+}
+
+/* ── Edit form ── */
+.jm-edit-form { display: flex; flex-direction: column; gap: 0; }
+
+.jm-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.jm-field { margin-bottom: 1rem; }
+
+.jm-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.35rem;
+}
+
+.jm-input {
+  width: 100%;
+  padding: 0.575rem 0.8rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: #f9fafb;
+  font-size: 0.875rem;
+  color: #111;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.jm-input:focus { outline: none; border-color: #9ca3af; background: #fff; }
+
+.jm-textarea { resize: vertical; }
+
+.jm-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 1.1em;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
+.jm-msg {
+  padding: 0.65rem 0.9rem;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  margin: 0.5rem 0 1rem;
+}
+.jm-msg--error   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.jm-msg--success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+.jm-edit-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+/* ── Applicants tab ── */
+.jm-app-header { margin-bottom: 1.25rem; }
+
+.jm-app-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 0.2rem;
+}
+
+.jm-app-sub {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.jm-empty {
+  text-align: center;
+  color: #9ca3af;
+  padding: 2rem 0;
+  font-size: 0.9rem;
+}
+
+.jm-error { color: #b91c1c; font-size: 0.9rem; padding: 1rem 0; }
+
+/* ── Table ── */
+.jm-table-wrap { overflow-x: auto; }
+
+.jm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.jm-table th {
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.jm-table td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.jm-table tr:last-child td { border-bottom: none; }
+
+.jm-applicant-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.jm-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.jm-dot--pending    { background: #f97316; }
+.jm-dot--reviewed   { background: #3b82f6; }
+.jm-dot--shortlisted { background: #22c55e; }
+.jm-dot--rejected   { background: #ef4444; }
+
+.jm-applicant-name { font-weight: 500; color: #111; }
+
+.jm-email { color: #6b7280; font-size: 0.85rem; }
+.jm-date  { color: #6b7280; font-size: 0.85rem; white-space: nowrap; }
+
+/* Badges */
+.jm-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  text-transform: lowercase;
+}
+.jm-badge--pending    { background: #fef9c3; color: #854d0e; }
+.jm-badge--reviewed   { background: #dbeafe; color: #1e40af; }
+.jm-badge--shortlisted { background: #dcfce7; color: #166534; }
+.jm-badge--rejected   { background: #fee2e2; color: #991b1b; }
+
+/* Actions cell */
+.jm-actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.jm-btn-view {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.78rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.jm-btn-view:hover { background: #f3f4f6; }
+
+.jm-status-select {
+  padding: 0.3rem 1.8rem 0.3rem 0.6rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: #111;
+  background: #f9fafb;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.45rem center;
+  background-size: 1em;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ── Shared buttons ── */
+.jm-btn-save {
+  padding: 0.55rem 1.4rem;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.jm-btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+.jm-btn-save:not(:disabled):hover { background: #222; }
+
+.jm-btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.825rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.jm-btn-edit:hover { background: #f3f4f6; }
+
+.jm-btn-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #fecaca;
+  border-radius: 7px;
+  background: #fff;
+  color: #b91c1c;
+  font-size: 0.825rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.jm-btn-delete:hover { background: #fef2f2; }
+
+.jm-btn-delete-confirm {
+  padding: 0.4rem 0.85rem;
+  border: none;
+  border-radius: 6px;
+  background: #b91c1c;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.jm-btn-delete-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.jm-btn-cancel-sm {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.jm-btn-cancel-sm:hover { background: #f3f4f6; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .jm-card { padding: 1.25rem 1rem; }
+  .jm-field-row { grid-template-columns: 1fr; }
+  .jm-topbar { flex-direction: column; align-items: flex-start; }
+}

@@ -27,7 +27,9 @@ const Header = () => {
 
   const employerLinks = [
     { label: 'Dashboard', to: '/dashboard' },
-    { label: 'Jobs', to: '/jobs' },
+    { label: 'My Jobs', to: '/my-jobs' },
+    { label: 'Post a Job', to: '/create-job' },
+    { label: 'Profile', to: '/profile' },
     { label: 'Industries', to: '/industries' },
   ];
 
