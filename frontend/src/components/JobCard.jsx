@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import "./JobCard.css";
 
 const JobCard = ({
+  id,
   title,
   company,
   location,
@@ -28,7 +30,9 @@ const JobCard = ({
         </div>
 
         <div className="jc-meta">
-          <h3 className="jc-title">{title}</h3>
+          <h3 className="jc-title">
+            <Link to={`/jobs/${id}`} className="jc-title-link">{title}</Link>
+          </h3>
           <p className="jc-company">{company}</p>
           <p className="jc-location">{location}</p>
           <div className="jc-badges">
@@ -73,6 +77,7 @@ const JobCard = ({
 };
 
 JobCard.propTypes = {
+  id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   company: PropTypes.string.isRequired,
   location: PropTypes.string.isRequired,
