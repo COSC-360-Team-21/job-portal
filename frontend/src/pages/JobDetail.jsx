@@ -33,7 +33,7 @@ const JobDetail = () => {
       const res = await fetch(`/api/comments/job/${id}`);
       if (res.ok) {
         const data = await res.json();
-        setComments(data.comments || []);
+        setComments(data.data || []);
       }
     } catch { /* ignore */ }
   }, [id]);
