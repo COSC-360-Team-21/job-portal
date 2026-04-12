@@ -1,9 +1,39 @@
 import { Router } from 'express';
+import path from 'path';
+import multer from 'multer';
+import { mkdirSync } from 'fs';
 import { body } from 'express-validator';
 import protect from '../middleware/authMiddleware.js';
-import { getProfile, updateProfile } from '../controllers/profileController.js';
+import { getProfile, updateProfile, uploadProfileImage } from '../controllers/profileController.js';
 
 const router = Router();
+
+const uploadDir = 'uploads';
+mkdirSync(uploadDir, { recursive: true });
+
+const imageStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadDir),
+  filename: (_req, file, cb) => {
+    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    cb(null, `${unique}${path.extname(file.originalname)}`);
+  },
+});
+
+const imageFilter = (_req, file, cb) => {
+  const allowed = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (allowed.includes(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files (JPG, PNG, GIF, WEBP) are allowed'), false);
+  }
+};
+
+const uploadImage = multer({
+  storage: imageStorage,
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 const updateValidations = [
   body('name').optional().notEmpty().withMessage('Name cannot be empty').trim(),
@@ -53,5 +83,6 @@ const updateValidations = [
 
 router.get('/', protect, getProfile);
 router.put('/', protect, updateValidations, updateProfile);
+router.put('/image', protect, uploadImage.single('profileImage'), uploadProfileImage);
 
 export default router;

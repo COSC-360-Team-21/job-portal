@@ -7,39 +7,30 @@ const Footer = () => {
 
   const columns = [
     {
-      heading: "Company",
-      links: [
-        { label: "About Us", to: "/about" },
-        { label: "Careers", to: "/careers" },
-        { label: "Blog", to: "/blog" },
-        { label: "Press", to: "/press" },
-      ],
-    },
-    {
       heading: "For Job Seekers",
       links: [
         { label: "Browse Jobs", to: "/jobs" },
         { label: "Browse Industries", to: "/industries" },
-        { label: "Saved Jobs", to: "/saved" },
-        { label: "Career Resources", to: "/resources" },
+        { label: "My Applications", to: "/my-applications" },
+        { label: "My Comments", to: "/my-comments" },
       ],
     },
     {
       heading: "For Employers",
       links: [
-        { label: "Post a Job", to: "/post-job" },
-        { label: "Browse Candidates", to: "/candidates" },
-        { label: "Pricing", to: "/pricing" },
-        { label: "Employer FAQ", to: "/faq" },
+        { label: "Post a Job", to: "/create-job" },
+        { label: "My Job Postings", to: "/my-jobs" },
+        { label: "Employer Profile", to: "/profile" },
+        { label: "Dashboard", to: "/dashboard" },
       ],
     },
     {
-      heading: "Support",
+      heading: "Quick Links",
       links: [
-        { label: "Help Center", to: "/help" },
-        { label: "Contact Us", to: "/contact" },
-        { label: "Privacy Policy", to: "/privacy" },
-        { label: "Terms of Service", to: "/terms" },
+        { label: "Register", to: "/register" },
+        { label: "Login", to: "/login" },
+        { label: "Job Search", to: "/search" },
+        { label: "Dashboard", to: "/dashboard" },
       ],
     },
   ];

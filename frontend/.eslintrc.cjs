@@ -31,6 +31,7 @@ module.exports = {
         afterAll: 'readonly',
         beforeEach: 'readonly',
         afterEach: 'readonly',
+        vi: 'readonly',
       },
     },
   ],

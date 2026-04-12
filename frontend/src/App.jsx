@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { NotificationProvider } from './components/Notification';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Breadcrumb from './components/Breadcrumb';
 import Hero from './components/Hero';
 import LoginForm from './components/LoginForm';
 import SignUp from './components/SignUp';
@@ -20,6 +22,8 @@ import EmployerProfile from './pages/EmployerProfile';
 import CreateJobPosting from './pages/CreateJobPosting';
 import ReceivedApplications from './pages/ReceivedApplications';
 import JobManage from './pages/JobManage';
+import AdminDashboard from './pages/AdminDashboard';
+import CommentHistory from './pages/CommentHistory';
 
 function GuestOnly({ children }) {
   const { user, authLoading } = useAuth();
@@ -72,6 +76,7 @@ function AppRoutes() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
+      <Breadcrumb />
       <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<HomeRoute />} />
@@ -146,6 +151,8 @@ function AppRoutes() {
           <Route path="/applications/received" element={<RequireAuth><ReceivedApplications /></RequireAuth>} />
           <Route path="/profile" element={<RequireAuth><EmployerProfile /></RequireAuth>} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+          <Route path="/admin" element={<RequireAuth><AdminDashboard /></RequireAuth>} />
+          <Route path="/my-comments" element={<RequireAuth><CommentHistory /></RequireAuth>} />
           <Route path="/companies/:companySlug" element={<CompanyProfile />} />
         </Routes>
       </main>
@@ -157,7 +164,9 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <NotificationProvider>
+        <AppRoutes />
+      </NotificationProvider>
     </AuthProvider>
   );
 }

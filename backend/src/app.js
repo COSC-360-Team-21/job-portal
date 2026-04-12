@@ -8,11 +8,15 @@ import applicationsRoutes from './routes/applicationsRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
 
 const app = express();
 
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+
+// Serve uploaded files (profile images, resumes, etc.)
+app.use('/uploads', express.static('uploads'));
 
 // Swagger UI — available at /api/docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -49,5 +53,6 @@ app.use('/api/applications', applicationsRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/comments', commentRoutes);
 
 export default app;

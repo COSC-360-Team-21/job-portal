@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import EmployerDashboard from './EmployerDashboard';
@@ -78,6 +78,8 @@ const Dashboard = () => {
   const [savingProfile, setSavingProfile] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [form, setForm] = useState(createFormState(user, profile));
+  const imageInputRef = useRef(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const profileCompletion = useMemo(() => getProfileCompletion(profile, user), [profile, user]);
 
@@ -186,6 +188,29 @@ const Dashboard = () => {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploadingImage(true);
+      const formData = new FormData();
+      formData.append('profileImage', file);
+      const res = await fetch('/api/profile/image', {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Upload failed');
+      persistAuth(token, { ...user, profileImage: data.profileImage });
+      setSaveMessage('Profile image updated!');
+    } catch (err) {
+      setSaveMessage(err.message || 'Image upload failed');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   return (
     <section className="db-page">
       <div className="db-hero">
@@ -207,9 +232,21 @@ const Dashboard = () => {
             <div className="db-profile-card">
               <div className="db-profile-top-row">
                 <div className="db-profile-identity">
-                  <div className="db-profile-avatar-lg">
-                    {(user?.name?.[0] || 'U').toUpperCase()}
+                  <div className="db-profile-avatar-lg" onClick={() => imageInputRef.current?.click()} title="Click to change photo" style={{ cursor: 'pointer', position: 'relative' }}>
+                    {user?.profileImage ? (
+                      <img src={user.profileImage} alt={user.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                    ) : (
+                      (user?.name?.[0] || 'U').toUpperCase()
+                    )}
+                    <span className="db-avatar-edit-overlay">{uploadingImage ? '…' : '📷'}</span>
                   </div>
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                  />
 
                   <div>
                     <h2>{user?.name || 'Your profile'}</h2>
@@ -341,7 +378,13 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="db-avatar">{(user?.name?.[0] || 'U').toUpperCase()}</div>
+            <div className="db-avatar">
+              {user?.profileImage ? (
+                <img src={user.profileImage} alt={user.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                (user?.name?.[0] || 'U').toUpperCase()
+              )}
+            </div>
           </div>
 
           <div className="db-main-grid">

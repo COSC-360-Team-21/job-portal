@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema(
       enum: ['jobseeker', 'employer', 'admin'],
       default: 'jobseeker',
     },
+    profileImage: {
+      type: String,
+      default: '',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     profile: {
       phone: { type: String, trim: true },
       location: { type: String, trim: true },
@@ -46,8 +54,21 @@ const userSchema = new mongoose.Schema(
       companyLogoUrl: { type: String, trim: true },
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { transform: (_doc, ret) => {
+    // Normalize profileImage from multer path `uploads/file.jpg` → `/uploads/file.jpg`
+    if (ret.profileImage) {
+      const forward = ret.profileImage.replace(/\\/g, '/');
+      ret.profileImage = forward.startsWith('/') ? forward : `/${forward}`;
+    }
+    delete ret.password;
+    return ret;
+  } } }
 );
+
+userSchema.index({ email: 1 });
+userSchema.index({ role: 1 });
+userSchema.index({ createdAt: -1 });
+userSchema.index({ isActive: 1 });
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();

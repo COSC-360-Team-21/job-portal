@@ -99,11 +99,19 @@ export function AuthProvider({ children }) {
   );
 
   const register = useCallback(
-    async (name, email, password, role) => {
+    async (name, email, password, role, profileImageFile) => {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('role', role);
+      if (profileImageFile) {
+        formData.append('profileImage', profileImageFile);
+      }
+
       const res = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
+        body: formData,
       });
 
       const data = await res.json();

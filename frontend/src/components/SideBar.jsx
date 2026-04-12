@@ -6,11 +6,9 @@ const SideBar = () => {
 const items = [
 { name: "Dashboard", path: "/dashboard" },
 { name: "Browse Jobs", path: "/jobs" },
-{ name: "Saved Jobs", path: "/saved" },
-{ name: "Applications", path: "/applications" },
-{ name: "Messages", path: "/messages" },
-{ name: "Profile", path: "/profile" },
-{ name: "Settings", path: "/settings" }
+{ name: "My Applications", path: "/my-applications" },
+{ name: "My Comments", path: "/my-comments" },
+{ name: "Industries", path: "/industries" }
 ];
 
 return (

@@ -79,7 +79,7 @@ export default function Hero() {
             <a href="/jobs" className="jobboard-hero-primary-btn">
               Explore Jobs
             </a>
-            <a href="/signup" className="jobboard-hero-secondary-btn">
+            <a href="/register" className="jobboard-hero-secondary-btn">
               Create Free Account
             </a>
           </div>

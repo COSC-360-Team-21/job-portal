@@ -212,3 +212,182 @@
 .jd-company-btn:hover {
   background: #eef2ff;
 }
+
+/* Comments / Discussion Section */
+.jd-comments-section {
+  margin-top: 32px;
+  border-top: 2px solid #e5e7eb;
+  padding-top: 28px;
+}
+
+.jd-comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.jd-comment-input {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 0.92rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.jd-comment-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.jd-reply-input {
+  font-size: 0.85rem;
+}
+
+.jd-comment-submit {
+  align-self: flex-end;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.jd-comment-submit:hover {
+  background: #1d4ed8;
+}
+
+.jd-comment-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.jd-comment-login {
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+.jd-comment-login a {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.jd-no-comments {
+  text-align: center;
+  color: #94a3b8;
+  padding: 24px;
+}
+
+.jd-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.jd-comment {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.jd-comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.jd-comment-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.jd-comment-avatar--sm {
+  width: 26px;
+  height: 26px;
+  font-size: 0.7rem;
+}
+
+.jd-comment-date {
+  color: #94a3b8;
+  font-size: 0.78rem;
+  margin-left: 8px;
+}
+
+.jd-comment-body {
+  margin: 0 0 8px;
+  color: #334155;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.jd-reply-btn,
+.jd-cancel-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.jd-cancel-btn {
+  color: #64748b;
+}
+
+.jd-collapse-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.jd-collapse-btn:hover {
+  color: #2563eb;
+}
+
+.jd-reply-form {
+  margin-top: 10px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jd-replies {
+  margin-top: 12px;
+  padding-left: 20px;
+  border-left: 3px solid #dbeafe;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jd-reply-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+}

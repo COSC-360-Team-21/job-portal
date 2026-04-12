@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./JobDetail.css";
 
 const formatDate = (dateStr) => {
@@ -14,9 +15,28 @@ const formatDate = (dateStr) => {
 const JobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { token, user } = useAuth();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Comments state
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState('');
+  const [replyTo, setReplyTo] = useState(null);
+  const [replyText, setReplyText] = useState('');
+  const [collapsedComments, setCollapsedComments] = useState({});
+  const [commentLoading, setCommentLoading] = useState(false);
+
+  const fetchComments = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/comments/job/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setComments(data.data || []);
+      }
+    } catch { /* ignore */ }
+  }, [id]);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -33,7 +53,8 @@ const JobDetail = () => {
       }
     };
     fetchJob();
-  }, [id]);
+    fetchComments();
+  }, [id, fetchComments]);
 
   if (loading) {
     return (
@@ -114,6 +135,146 @@ const JobDetail = () => {
               View more jobs by {job.company}
             </Link>
 </div>
+
+          {/* Discussion Section */}
+          <div className="jd-section jd-comments-section">
+            <h2>Discussion ({comments.length})</h2>
+
+            {token && user ? (
+              <div className="jd-comment-form">
+                <textarea
+                  className="jd-comment-input"
+                  placeholder="Share your thoughts about this job…"
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  rows={3}
+                />
+                <button
+                  className="jd-comment-submit"
+                  disabled={!commentText.trim() || commentLoading}
+                  onClick={async () => {
+                    if (!commentText.trim()) return;
+                    setCommentLoading(true);
+                    try {
+                      const res = await fetch('/api/comments', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        body: JSON.stringify({ content: commentText.trim(), jobId: id }),
+                      });
+                      if (res.ok) {
+                        setCommentText('');
+                        fetchComments();
+                      }
+                    } catch { /* ignore */ }
+                    setCommentLoading(false);
+                  }}
+                >
+                  {commentLoading ? 'Posting…' : 'Post Comment'}
+                </button>
+              </div>
+            ) : (
+              <p className="jd-comment-login">
+                <Link to="/login">Log in</Link> to join the discussion.
+              </p>
+            )}
+
+            <div className="jd-comments-list">
+              {comments.length === 0 ? (
+                <p className="jd-no-comments">No comments yet. Be the first to share your thoughts!</p>
+              ) : (
+                comments.map((comment) => (
+                  <div key={comment._id} className="jd-comment">
+                    <div className="jd-comment-header">
+                      <span className="jd-comment-avatar">
+                        {comment.author?.profileImage ? (
+                          <img src={comment.author.profileImage} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                        ) : (
+                          (comment.author?.name?.[0] || '?').toUpperCase()
+                        )}
+                      </span>
+                      <div>
+                        <strong>{comment.author?.name || 'Anonymous'}</strong>
+                        <span className="jd-comment-date">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      {comment.replies?.length > 0 && (
+                        <button
+                          className="jd-collapse-btn"
+                          onClick={() => setCollapsedComments((prev) => ({ ...prev, [comment._id]: !prev[comment._id] }))}
+                        >
+                          {collapsedComments[comment._id] ? `▸ Show ${comment.replies.length} replies` : `▾ Hide replies`}
+                        </button>
+                      )}
+                    </div>
+                    <p className="jd-comment-body">{comment.content}</p>
+
+                    {token && (
+                      <button className="jd-reply-btn" onClick={() => setReplyTo(replyTo === comment._id ? null : comment._id)}>
+                        Reply
+                      </button>
+                    )}
+
+                    {replyTo === comment._id && (
+                      <div className="jd-reply-form">
+                        <textarea
+                          className="jd-comment-input jd-reply-input"
+                          placeholder="Write a reply…"
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          rows={2}
+                        />
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            className="jd-comment-submit"
+                            disabled={!replyText.trim() || commentLoading}
+                            onClick={async () => {
+                              if (!replyText.trim()) return;
+                              setCommentLoading(true);
+                              try {
+                                const res = await fetch('/api/comments', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                                  body: JSON.stringify({ content: replyText.trim(), jobId: id, parentCommentId: comment._id }),
+                                });
+                                if (res.ok) {
+                                  setReplyText('');
+                                  setReplyTo(null);
+                                  fetchComments();
+                                }
+                              } catch { /* ignore */ }
+                              setCommentLoading(false);
+                            }}
+                          >
+                            Post Reply
+                          </button>
+                          <button className="jd-cancel-btn" onClick={() => { setReplyTo(null); setReplyText(''); }}>Cancel</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Collapsible replies */}
+                    {comment.replies?.length > 0 && !collapsedComments[comment._id] && (
+                      <div className="jd-replies">
+                        {comment.replies.map((reply) => (
+                          <div key={reply._id} className="jd-comment jd-reply-card">
+                            <div className="jd-comment-header">
+                              <span className="jd-comment-avatar jd-comment-avatar--sm">
+                                {(reply.author?.name?.[0] || '?').toUpperCase()}
+                              </span>
+                              <div>
+                                <strong>{reply.author?.name || 'Anonymous'}</strong>
+                                <span className="jd-comment-date">{new Date(reply.createdAt).toLocaleDateString()}</span>
+                              </div>
+                            </div>
+                            <p className="jd-comment-body">{reply.content}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

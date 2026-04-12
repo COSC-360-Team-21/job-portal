@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './MyJobPostings.css';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
-
 const WORK_TYPES = ['Full-time', 'Part-time', 'Contract', 'Internship'];
 
 const formatDate = (dateStr) => {
@@ -65,7 +63,7 @@ function EditModal({ token, job, onClose, onSaved }) {
           .filter(Boolean);
       }
 
-      const res = await fetch(`${API}/api/jobs/${job._id}`, {
+      const res = await fetch(`/api/jobs/${job._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +85,7 @@ function EditModal({ token, job, onClose, onSaved }) {
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      const res = await fetch(`${API}/api/jobs/${job._id}`, {
+      const res = await fetch(`/api/jobs/${job._id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -292,7 +290,7 @@ function PostJobModal({ token, user, onClose, onPosted }) {
           .filter(Boolean);
       }
 
-      const res = await fetch(`${API}/api/jobs`, {
+      const res = await fetch(`/api/jobs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -460,10 +458,10 @@ export default function MyJobPostings() {
         if (status) params.set('status', status);
 
         const [jobsRes, statsRes] = await Promise.all([
-          fetch(`${API}/api/jobs/mine?${params}`, {
+          fetch(`/api/jobs/mine?${params}`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch(`${API}/api/jobs/stats`, {
+          fetch(`/api/jobs/stats`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -527,7 +525,7 @@ export default function MyJobPostings() {
     );
     setEditingJob(null);
     // refresh stats
-    fetch(`${API}/api/jobs/stats`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`/api/jobs/stats`, { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.json())
       .then(setStats)
       .catch(() => {});

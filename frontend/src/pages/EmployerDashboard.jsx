@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './EmployerDashboard.css';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
-
 const formatDate = (dateStr) => {
   if (!dateStr) return '';
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -48,7 +46,7 @@ function PostJobModal({ token, user, onClose, onPosted }) {
     description: '',
     requirements: '',
     salaryRange: '',
-    workType: 'Remote',
+    workType: 'Full-time',
   });
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState(null);
@@ -78,7 +76,7 @@ function PostJobModal({ token, user, onClose, onPosted }) {
           .filter(Boolean);
       }
 
-      const res = await fetch(`${API}/api/jobs`, {
+      const res = await fetch(`/api/jobs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -225,7 +223,7 @@ export default function EmployerDashboard() {
   const fetchDashboard = useCallback(async () => {
     setLoadError(null);
     try {
-      const res = await fetch(`${API}/api/jobs/employer-dashboard`, {
+      const res = await fetch(`/api/jobs/employer-dashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('Failed to load dashboard');

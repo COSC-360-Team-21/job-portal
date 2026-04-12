@@ -2,7 +2,9 @@ import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 import {
   getStats,
+  getActivityByDate,
   getUsers,
+  toggleUserActive,
   deleteUser,
   getJobs,
   deleteJob,
@@ -24,6 +26,12 @@ const paginationRules = [
 router.get('/stats', getStats);
 
 router.get(
+  '/activity',
+  [query('days').optional().isInt({ min: 1, max: 365 }).withMessage('days must be 1-365')],
+  getActivityByDate
+);
+
+router.get(
   '/users/:id?',
   [
     param('id').optional().isMongoId().withMessage('Invalid user id'),
@@ -32,6 +40,12 @@ router.get(
     ...paginationRules,
   ],
   getUsers
+);
+
+router.patch(
+  '/users/:id/toggle-active',
+  [param('id').isMongoId().withMessage('Invalid user id')],
+  toggleUserActive
 );
 
 router.delete('/users/:id', [param('id').isMongoId().withMessage('Invalid user id')], deleteUser);

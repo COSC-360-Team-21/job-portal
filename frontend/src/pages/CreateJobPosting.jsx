@@ -3,8 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './CreateJobPosting.css';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
-
 const WORK_TYPES = ['Full-time', 'Part-time', 'Contract', 'Internship'];
 
 export default function CreateJobPosting() {
@@ -50,7 +48,7 @@ export default function CreateJobPosting() {
           .filter(Boolean);
       }
 
-      const res = await fetch(`${API}/api/jobs`, {
+      const res = await fetch(`/api/jobs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './ReceivedApplications.css';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
-
 const STATUSES = ['pending', 'reviewed', 'shortlisted', 'rejected'];
 
 const STATUS_COLORS = {
@@ -47,7 +45,7 @@ export default function ReceivedApplications() {
         if (jobId) params.set('jobId', jobId);
         if (status) params.set('applicationStatus', status);
 
-        const res = await fetch(`${API}/api/applications/received?${params}`, {
+        const res = await fetch(`/api/applications/received?${params}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -65,7 +63,7 @@ export default function ReceivedApplications() {
 
   // Fetch my jobs list for the filter dropdown
   useEffect(() => {
-    fetch(`${API}/api/jobs/mine?limit=100`, {
+    fetch(`/api/jobs/mine?limit=100`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
@@ -100,7 +98,7 @@ export default function ReceivedApplications() {
 
   const handleStatusChange = async (appId, newStatus) => {
     try {
-      const res = await fetch(`${API}/api/applications/${appId}/status`, {
+      const res = await fetch(`/api/applications/${appId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -23,6 +23,7 @@ const Header = () => {
     { label: 'Jobs', to: '/jobs' },
     { label: 'Industries', to: '/industries' },
     { label: 'My Applications', to: '/my-applications' },
+    { label: 'My Comments', to: '/my-comments' },
   ];
 
   const employerLinks = [
@@ -33,7 +34,19 @@ const Header = () => {
     { label: 'Industries', to: '/industries' },
   ];
 
-  const navLinks = !user ? guestLinks : user.role === 'employer' ? employerLinks : jobSeekerLinks;
+  const adminLinks = [
+    { label: 'Admin', to: '/admin' },
+    { label: 'Jobs', to: '/jobs' },
+    { label: 'Industries', to: '/industries' },
+  ];
+
+  const navLinks = !user
+    ? guestLinks
+    : user.role === 'admin'
+      ? adminLinks
+      : user.role === 'employer'
+        ? employerLinks
+        : jobSeekerLinks;
 
   return (
     <header className="jb-header">
@@ -74,12 +87,16 @@ const Header = () => {
             <>
               <Link to="/dashboard" className="jb-profile-shortcut">
                 <span className="jb-profile-avatar">
-                  {(user.name?.[0] || 'U').toUpperCase()}
+                  {user.profileImage ? (
+                    <img src={user.profileImage} alt={user.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                  ) : (
+                    (user.name?.[0] || 'U').toUpperCase()
+                  )}
                 </span>
                 <span className="jb-user-chip">
                   <span className="jb-user-name">{user.name?.split(' ')[0] || 'User'}</span>
                   <span className="jb-user-role">
-                    {user.role === 'employer' ? 'Employer account' : 'View profile'}
+                    {user.role === 'admin' ? 'Admin' : user.role === 'employer' ? 'Employer account' : 'View profile'}
                   </span>
                 </span>
               </Link>

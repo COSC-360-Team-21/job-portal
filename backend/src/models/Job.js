@@ -66,4 +66,10 @@ const jobSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+jobSchema.index({ postedBy: 1, createdAt: -1 });
+jobSchema.index({ status: 1 });
+jobSchema.index({ company: 1 });
+jobSchema.index({ workType: 1 });
+jobSchema.index({ title: 'text', company: 'text', description: 'text' });
+
 export default mongoose.model('Job', jobSchema);

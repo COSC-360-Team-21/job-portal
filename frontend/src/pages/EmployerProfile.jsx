@@ -1,9 +1,7 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './EmployerProfile.css';
-
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 
 export default function EmployerProfile() {
   const { token, user, persistAuth } = useAuth();
@@ -46,7 +44,7 @@ export default function EmployerProfile() {
       if (form.websiteUrl.trim()) profilePatch.websiteUrl = form.websiteUrl.trim();
       if (form.companyLogoUrl.trim()) profilePatch.companyLogoUrl = form.companyLogoUrl.trim();
 
-      const res = await fetch(`${API}/api/profile`, {
+      const res = await fetch(`/api/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +71,7 @@ export default function EmployerProfile() {
   return (
     <main className="ep-page">
       <Link className="ep-back" to="/dashboard">
-        â† Back to Dashboard
+        ← Back to Dashboard
       </Link>
 
       <div className="ep-card">
@@ -103,7 +101,7 @@ export default function EmployerProfile() {
                 name="companyLogoUrl"
                 value={form.companyLogoUrl}
                 onChange={handleChange}
-                placeholder="https://images.unsplash.com/photo-â€¦"
+                placeholder="https://images.unsplash.com/photo-…"
               />
               <p className="ep-logo-hint">Paste a URL to your company logo image</p>
             </div>
@@ -152,7 +150,7 @@ export default function EmployerProfile() {
               name="companyDescription"
               value={form.companyDescription}
               onChange={handleChange}
-              placeholder="Tell job seekers about your company, mission, and cultureâ€¦"
+              placeholder="Tell job seekers about your company, mission, and culture…"
               rows={4}
               required
             />
@@ -205,7 +203,7 @@ export default function EmployerProfile() {
 
           <div className="ep-actions">
             <button type="submit" className="ep-btn-save" disabled={saving}>
-              {saving ? 'Savingâ€¦' : 'Save Changes'}
+              {saving ? 'Saving…' : 'Save Changes'}
             </button>
             <button
               type="button"
